@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 # URL do pliku ze stawkami w sieci
-STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/refs/heads/main/stawki.json"
+STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
 class Formularz_glowny(ft.Column):
     def __init__(self):
@@ -26,8 +26,8 @@ class Formularz_glowny(ft.Column):
                 src="/Kas_winieta.jpg",
                 fit=ft.BoxFit.CONTAIN,
             ),
-            width=300,
-            height=300,
+            width=200,
+            height=200,
             alignment=ft.Alignment.CENTER,
             animate=ft.Animation(600, ft.AnimationCurve.EASE_IN_OUT),
         )
@@ -35,28 +35,42 @@ class Formularz_glowny(ft.Column):
         self.logo_container = ft.Row([self.logo], alignment=ft.MainAxisAlignment.CENTER)
 
         # 1. Tworzymy pola na formularzu
-        self.pole_towar = ft.Text("", size=20, weight=ft.FontWeight.BOLD, color="green", width=500, text_align=ft.TextAlign.CENTER)
+        self.pole_towar = ft.Text("", size=20, weight=ft.FontWeight.BOLD, color="green", text_align=ft.TextAlign.CENTER)
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300 ,width=250
+            visible=False, border_color=ft.Colors.GREEN_300, expand=True
         )
+        self.pole_input1.size_constraints = ft.BoxConstraints(min_width=200)
+        
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, width=250
+            visible=False, border_color=ft.Colors.GREEN_300, expand=True
         )
+        self.pole_input2.size_constraints = ft.BoxConstraints(min_width=200)
+        
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, width=250
+            visible=False, border_color=ft.Colors.GREEN_300, expand=True
         )
+        self.pole_input3.size_constraints = ft.BoxConstraints(min_width=200)
         
-        self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, width=250)
-        self.pole_vat = ft.TextField(label="Należności VAT", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, width=250)
-        self.pole_clo = ft.TextField(label="Należności cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, width=250)
-        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, width=250)
-        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, width=250)
+        self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
+        self.pole_akcyza.size_constraints = ft.BoxConstraints(min_width=200)
         
-        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, width=250, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50)
+        self.pole_vat = ft.TextField(label="Należności VAT", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
+        self.pole_vat.size_constraints = ft.BoxConstraints(min_width=200)
+        
+        self.pole_clo = ft.TextField(label="Należności cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
+        self.pole_clo.size_constraints = ft.BoxConstraints(min_width=200)
+        
+        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
+        self.pole_av.size_constraints = ft.BoxConstraints(min_width=200)
+        
+        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
+        self.pole_avc.size_constraints = ft.BoxConstraints(min_width=200)
+        
+        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, expand=True)
 
         # 1.6 Przycisk Zapisz/Drukuj
         self.menu_zapisz = ft.PopupMenuButton(
@@ -68,10 +82,11 @@ class Formularz_glowny(ft.Column):
                         ft.Text("Zapisz / Drukuj", color="white", weight=FontWeight.BOLD),
                     ],
                     tight=True,
+                    alignment=ft.MainAxisAlignment.CENTER
                 ),
                 padding=10,
                 border_radius=8,
-                width=200,
+                expand=True
             ),
             items=[
                 ft.PopupMenuItem(content="Zapisz do TXT", icon=ft.Icons.TEXT_SNIPPET, on_click=self.zapisz_txt),
@@ -95,10 +110,11 @@ class Formularz_glowny(ft.Column):
                         ft.Text("Wybierz rodzaj towaru ▼", color="white", weight=FontWeight.BOLD),
                     ],
                     tight=True,
+                    alignment=ft.MainAxisAlignment.CENTER
                 ),
                 padding=10,
                 border_radius=8,
-                width=250,
+                expand=True
             ),
             items=[
                 ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: self.ustaw_tryb("papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True)),
@@ -131,9 +147,9 @@ class Formularz_glowny(ft.Column):
                         ft.Text("KALKULATOR", size=20, weight=ft.FontWeight.BOLD, color="green_900"),
                         ft.Text("CELNO-SKARBOWY 2026", size=12, color="grey_600", italic=True),
                     ], spacing=0)
-                ]),
+                ], wrap=True),
                 self.menu_lista
-            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, wrap=True),
             margin=ft.Margin.only(bottom=10)
         )
 
@@ -170,7 +186,7 @@ class Formularz_glowny(ft.Column):
         )
 
         self.stopka_akcji = ft.Container(
-            content=ft.Row([self.przycisk_oblicz, self.menu_zapisz], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
+            content=ft.Row([self.przycisk_oblicz, self.menu_zapisz], alignment=ft.MainAxisAlignment.CENTER, spacing=20, wrap=True),
             margin=ft.Margin.only(top=20)
         )
 
@@ -178,9 +194,11 @@ class Formularz_glowny(ft.Column):
             content=ft.Column([
                 self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
             ], spacing=10, scroll=ft.ScrollMode.AUTO),
-            width=900, padding=30, bgcolor=ft.Colors.WHITE, border_radius=20,
+            padding=20, bgcolor=ft.Colors.WHITE, border_radius=20,
             border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12"),
+            expand=True,
         )
+        self.layout_formularza.max_width = 900
 
         self.controls = [self.layout_formularza]
 
@@ -513,7 +531,8 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.window.width = 950
     page.window.height = 820
-    #page.scroll= "auto"
+    page.scroll= ft.ScrollMode.AUTO
+    page.padding = 10
     
     # Obsługa favicon
     page.favicon = "favicon.png"
@@ -522,5 +541,7 @@ def main(page: ft.Page):
     page.add(formularz)
 
 if __name__ == "__main__":
-    # Używamy najnowszego standardu 'run' zamiast 'app'
-    ft.run(main, assets_dir="assets")
+    # Obsługa portu dla Render.com
+    port = int(os.environ.get("PORT", 8550))
+    # Używamy flet.run() zamiast flet.app(), zgodnie z najnowszą specyfikacją (0.80.0+)
+    ft.run(main, assets_dir="assets", port=port, view=None, host="0.0.0.0")
