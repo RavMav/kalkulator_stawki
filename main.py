@@ -23,7 +23,7 @@ class Formularz_glowny(ft.Column):
         # Logo
         self.logo = ft.Container(
             content=ft.Image(
-                src="/assets/Kas_winieta.jpg",
+                src="/Kas_winieta.jpg",
                 fit=ft.BoxFit.CONTAIN,
             ),
             width=300,
@@ -507,6 +507,7 @@ class Formularz_glowny(ft.Column):
         self.update()
 
 def main(page: ft.Page):
+    page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -521,4 +522,5 @@ def main(page: ft.Page):
     page.add(formularz)
 
 if __name__ == "__main__":
-    ft.run(main)
+    # Używamy najnowszego standardu 'run' zamiast 'app'
+    ft.run(main, assets_dir="assets")
