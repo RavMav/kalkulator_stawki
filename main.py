@@ -23,7 +23,7 @@ class Formularz_glowny(ft.Column):
         # Logo
         self.logo = ft.Container(
             content=ft.Image(
-                src="/assets/Kas_winieta.jpg",
+                src="Kas_winieta.jpg",
                 fit=ft.BoxFit.CONTAIN,
             ),
             width=300,
