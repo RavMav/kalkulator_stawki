@@ -23,11 +23,11 @@ class Formularz_glowny(ft.Column):
         # Logo
         self.logo = ft.Container(
             content=ft.Image(
-                src="/Kas_winieta.jpg",
+                src="/assets/Kas_winieta.jpg",
                 fit=ft.BoxFit.CONTAIN,
             ),
-            width=200,
-            height=200,
+            width=300,
+            height=300,
             alignment=ft.Alignment.CENTER,
             animate=ft.Animation(600, ft.AnimationCurve.EASE_IN_OUT),
         )
@@ -39,38 +39,30 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, expand=True
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
         )
-        self.pole_input1.size_constraints = ft.BoxConstraints(min_width=200)
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, expand=True
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
         )
-        self.pole_input2.size_constraints = ft.BoxConstraints(min_width=200)
         
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, expand=True
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
         )
-        self.pole_input3.size_constraints = ft.BoxConstraints(min_width=200)
         
-        self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
-        self.pole_akcyza.size_constraints = ft.BoxConstraints(min_width=200)
+        self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
         
-        self.pole_vat = ft.TextField(label="Należności VAT", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
-        self.pole_vat.size_constraints = ft.BoxConstraints(min_width=200)
+        self.pole_vat = ft.TextField(label="Należności VAT", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
         
-        self.pole_clo = ft.TextField(label="Należności cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
-        self.pole_clo.size_constraints = ft.BoxConstraints(min_width=200)
+        self.pole_clo = ft.TextField(label="Należności cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
         
-        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
-        self.pole_av.size_constraints = ft.BoxConstraints(min_width=200)
+        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 6})
         
-        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, expand=True)
-        self.pole_avc.size_constraints = ft.BoxConstraints(min_width=200)
+        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 6})
         
-        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, expand=True)
+        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 6})
 
         # 1.6 Przycisk Zapisz/Drukuj
         self.menu_zapisz = ft.PopupMenuButton(
@@ -86,7 +78,6 @@ class Formularz_glowny(ft.Column):
                 ),
                 padding=10,
                 border_radius=8,
-                expand=True
             ),
             items=[
                 ft.PopupMenuItem(content="Zapisz do TXT", icon=ft.Icons.TEXT_SNIPPET, on_click=self.zapisz_txt),
@@ -95,7 +86,8 @@ class Formularz_glowny(ft.Column):
                 ft.PopupMenuItem(content="Drukuj (Otwórz PDF)", icon=ft.Icons.PRINT, on_click=self.drukuj_pdf),
             ],
             visible=False,
-            disabled=True
+            disabled=True,
+            col={"sm": 12, "md": 6}
         )
 
         # 2. Menu rozwijane
@@ -114,7 +106,6 @@ class Formularz_glowny(ft.Column):
                 ),
                 padding=10,
                 border_radius=8,
-                expand=True
             ),
             items=[
                 ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: self.ustaw_tryb("papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True)),
@@ -137,7 +128,7 @@ class Formularz_glowny(ft.Column):
 
         # 3. Wygląd formularza
         self.naglowek = ft.Container(
-            content=ft.Row([
+            content=ft.ResponsiveRow([
                 ft.Row([
                     ft.Container(
                         content=ft.Icon(ft.Icons.ADD_HOME, color="white", size=30),
@@ -147,14 +138,14 @@ class Formularz_glowny(ft.Column):
                         ft.Text("KALKULATOR", size=20, weight=ft.FontWeight.BOLD, color="green_900"),
                         ft.Text("CELNO-SKARBOWY 2026", size=12, color="grey_600", italic=True),
                     ], spacing=0)
-                ], wrap=True),
-                self.menu_lista
-            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, wrap=True),
+                ], col={"sm": 12, "md": 6}, alignment=ft.MainAxisAlignment.START),
+                ft.Container(self.menu_lista, col={"sm": 12, "md": 6}, alignment=ft.Alignment.CENTER_RIGHT if os.name != "nt" else ft.Alignment.CENTER_LEFT)
+            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER),
             margin=ft.Margin.only(bottom=10)
         )
 
         self.kontener_statusu = ft.Container(
-            content=ft.Row([self.pole_towar]),
+            content=ft.ResponsiveRow([self.pole_towar], alignment=ft.MainAxisAlignment.CENTER),
             padding=10, bgcolor="blue_grey_50", border_radius=8,
             alignment=ft.alignment.Alignment.CENTER, visible=False
         )
@@ -164,7 +155,7 @@ class Formularz_glowny(ft.Column):
                 content=ft.Column([
                     ft.Text("DANE WEJŚCIOWE", size=13, weight=ft.FontWeight.BOLD),
                     ft.Divider(height=1, color="green_100"),
-                    ft.Row([self.pole_input1, self.pole_input2, self.pole_input3], spacing=20, wrap=True),
+                    ft.ResponsiveRow([self.pole_input1, self.pole_input2, self.pole_input3], spacing=20),
                 ], spacing=15),
                 padding=20,
             ),
@@ -177,8 +168,8 @@ class Formularz_glowny(ft.Column):
                 content=ft.Column([
                     ft.Text("PODSUMOWANIE NALEŻNOŚCI", size=13, weight=ft.FontWeight.BOLD, color="green_800"),
                     ft.Divider(height=1, color="green_100"),
-                    ft.Row([self.pole_akcyza, self.pole_vat, self.pole_clo], spacing=20, wrap=True),
-                    ft.Row([self.pole_av, self.pole_avc], spacing=20, wrap=True),
+                    ft.ResponsiveRow([self.pole_akcyza, self.pole_vat, self.pole_clo], spacing=20),
+                    ft.ResponsiveRow([self.pole_av, self.pole_avc], spacing=20),
                 ], spacing=15),
                 padding=20,
             ),
@@ -186,17 +177,16 @@ class Formularz_glowny(ft.Column):
         )
 
         self.stopka_akcji = ft.Container(
-            content=ft.Row([self.przycisk_oblicz, self.menu_zapisz], alignment=ft.MainAxisAlignment.CENTER, spacing=20, wrap=True),
+            content=ft.ResponsiveRow([self.przycisk_oblicz, self.menu_zapisz], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
             margin=ft.Margin.only(top=20)
         )
 
         self.layout_formularza = ft.Container(
             content=ft.Column([
                 self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
-            ], spacing=10, scroll=ft.ScrollMode.AUTO),
-            padding=20, bgcolor=ft.Colors.WHITE, border_radius=20,
-            border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12"),
-            expand=True,
+            ], spacing=10),
+            padding=30, bgcolor=ft.Colors.WHITE, border_radius=20,
+            border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12")
         )
         self.layout_formularza.max_width = 900
 
@@ -531,7 +521,7 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.window.width = 950
     page.window.height = 820
-    page.scroll= ft.ScrollMode.AUTO
+    page.scroll = ft.ScrollMode.AUTO
     page.padding = 10
     
     # Obsługa favicon
