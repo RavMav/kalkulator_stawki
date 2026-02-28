@@ -64,27 +64,18 @@ class Formularz_glowny(ft.Column):
         
         self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 6})
 
-        # 1.6 Przycisk Zapisz/Drukuj
-        self.menu_zapisz = ft.PopupMenuButton(
-            content=ft.Container(
-                bgcolor=ft.Colors.BLUE_GREY_600,
-                content=ft.Row(
-                    [
-                        ft.Icon(ft.Icons.SAVE, color="white"),
-                        ft.Text("Zapisz / Drukuj", color="white", weight=FontWeight.BOLD),
-                    ],
-                    tight=True,
-                    alignment=ft.MainAxisAlignment.CENTER
-                ),
-                padding=10,
-                border_radius=8,
+        # 1.6 Przycisk Podglądu
+        self.przycisk_podglad = ft.ElevatedButton(
+            content=ft.Row(
+                [
+                    ft.Icon(ft.Icons.PRINT, color="white"),
+                    ft.Text("Drukuj / Podgląd", color="white", weight=FontWeight.BOLD),
+                ],
+                tight=True,
+                alignment=ft.MainAxisAlignment.CENTER
             ),
-            items=[
-                ft.PopupMenuItem(content="Zapisz do TXT", icon=ft.Icons.TEXT_SNIPPET, on_click=self.zapisz_txt),
-                ft.PopupMenuItem(content="Drukuj (Otwórz TXT)", icon=ft.Icons.PRINT, on_click=self.drukuj_txt),
-                ft.PopupMenuItem(content="Zapisz do PDF", icon=ft.Icons.PICTURE_AS_PDF, on_click=self.zapisz_pdf),
-                ft.PopupMenuItem(content="Drukuj (Otwórz PDF)", icon=ft.Icons.PRINT, on_click=self.drukuj_pdf),
-            ],
+            bgcolor=ft.Colors.BLUE_GREY_600,
+            on_click=self.otworz_podglad,
             visible=False,
             disabled=True,
             col={"sm": 12, "md": 6}
@@ -177,7 +168,7 @@ class Formularz_glowny(ft.Column):
         )
 
         self.stopka_akcji = ft.Container(
-            content=ft.ResponsiveRow([self.przycisk_oblicz, self.menu_zapisz], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
+            content=ft.ResponsiveRow([self.przycisk_oblicz, self.przycisk_podglad], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
             margin=ft.Margin.only(top=20)
         )
 
@@ -228,8 +219,8 @@ class Formularz_glowny(ft.Column):
         self.kontener_statusu.visible = True
         self.sekcja_wyniki.visible = True
         self.sekcja_dane.visible = True
-        self.menu_zapisz.visible = True
-        self.menu_zapisz.disabled = True
+        self.przycisk_podglad.visible = True
+        self.przycisk_podglad.disabled = True
         
         if i3 == "Kurs Euro":
             self.pobierz_kurs_euro()
@@ -244,8 +235,8 @@ class Formularz_glowny(ft.Column):
             pole.visible = False
             pole.bgcolor = ft.Colors.GREEN_50
         self.przycisk_oblicz.visible = False
-        self.menu_zapisz.visible = False
-        self.menu_zapisz.disabled = True
+        self.przycisk_podglad.visible = False
+        self.przycisk_podglad.disabled = True
         self.update()
 
     def sformatuj_wyniki(self):
@@ -277,42 +268,9 @@ class Formularz_glowny(ft.Column):
         
         return wynik
 
-    def zapisz_txt(self, e):
+    def otworz_podglad(self, e):
         try:
-            filename = f"wynik_kalkulacji z {self.dzisiaj}.txt"
-            tekst = self.sformatuj_wyniki()
-            with open(filename, "w", encoding="utf-8") as f:
-                f.write(tekst)
-            snack = ft.SnackBar(ft.Text(f"Zapisano pomyślnie do {filename}!"))
-            e.page.overlay.append(snack)
-            snack.open = True
-            e.page.update()
-        except Exception as ex:
-            print(f"Błąd zapisu TXT: {ex}")
-
-    def zapisz_pdf(self, e):
-        try:
-            filename = f"wynik_kalkulacji z {self.dzisiaj}.pdf"
-            pdf = FPDF()
-            pdf.add_page()
-            polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
-                             "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
-            tekst = self.sformatuj_wyniki()
-            for k, v in polskie_znaki.items():
-                tekst = tekst.replace(k, v)
-            pdf.set_font("Helvetica", size=12)
-            for line in tekst.split("\n"):
-                pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            pdf.output(filename)
-            snack = ft.SnackBar(ft.Text(f"Zapisano pomyślnie do {filename}!"))
-            e.page.overlay.append(snack)
-            snack.open = True
-            e.page.update()
-        except Exception as ex:
-            print(f"Błąd zapisu PDF: {ex}")
-
-    def drukuj_pdf(self, e):
-        try:
+            filename = f"wynik_kalkulacji_z_{self.dzisiaj}.pdf"
             pdf = FPDF()
             pdf.add_page()
             polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
@@ -324,23 +282,15 @@ class Formularz_glowny(ft.Column):
             for line in tekst.split("\n"):
                 pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             
-            filename = "temp_wynik.pdf"
-            pdf.output(filename)
-            if os.path.exists(filename):
-                os.startfile(filename, "open")
+            # Zapisujemy w bieżącym katalogu
+            full_path = os.path.abspath(filename)
+            pdf.output(full_path)
+            
+            # Otwieramy plik w domyślnej aplikacji za pomocą Flet
+            # Dla mobilnych: system obsłuży podgląd i udostępnianie
+            e.page.launch_url(f"file://{full_path}")
         except Exception as ex:
-            print(f"Błąd drukowania PDF: {ex}")
-
-    def drukuj_txt(self, e):
-        try:
-            tekst = self.sformatuj_wyniki()
-            filename = "temp_wynik.txt"
-            with open(filename, "w", encoding="utf-8") as f:
-                f.write(tekst)
-            if os.path.exists(filename):
-                os.startfile(filename, "open")
-        except Exception as ex:
-            print(f"Błąd drukowania TXT: {ex}")
+            print(f"Błąd otwierania podglądu: {ex}")
 
     def pobierz_liczbe(self, pole):
         surowy_tekst = pole.value.strip() if pole.value else ""
@@ -510,7 +460,7 @@ class Formularz_glowny(ft.Column):
         self.pole_av.value = f"{a + v:.0f} zł"
         self.pole_avc.value = f"{a + v + c:.0f} zł"
         
-        self.menu_zapisz.disabled = False
+        self.przycisk_podglad.disabled = False
         self.przestepstwo(a, v, c)
         self.update()
 
