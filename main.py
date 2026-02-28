@@ -4,6 +4,7 @@ import flet as ft
 from flet import FontWeight
 from fpdf import FPDF, XPos, YPos
 import os
+import base64
 from datetime import datetime
 
 # URL do pliku ze stawkami w sieci
@@ -276,33 +277,35 @@ class Formularz_glowny(ft.Column):
             snack.open = True
             self.page.update()
 
-            filename = f"wynik_kalkulacji_z_{self.dzisiaj}.pdf"
             pdf = FPDF()
+            # Dodajemy obsługę polskich znaków (czcionka Unicode)
+            font_path = os.path.join("assets", "Arial.ttf")
             pdf.add_page()
-            polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
-                             "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
+            
             tekst = self.sformatuj_wyniki()
-            for k, v in polskie_znaki.items():
-                tekst = tekst.replace(k, v)
-            pdf.set_font("Helvetica", size=12)
+            
+            if os.path.exists(font_path):
+                pdf.add_font("Arial", "", font_path)
+                pdf.set_font("Arial", size=12)
+            else:
+                # Fallback do Helvetica z zamianą polskich znaków
+                pdf.set_font("Helvetica", size=12)
+                polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
+                                 "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
+                for k, v in polskie_znaki.items():
+                    tekst = tekst.replace(k, v)
+
             for line in tekst.split("\n"):
                 pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             
-            # Zapisujemy w bieżącym katalogu
-            full_path = os.path.abspath(filename)
-            pdf.output(full_path)
+            # Pobieramy PDF jako bajty i kodujemy do Base64
+            pdf_bytes = pdf.output()
+            b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
             
-            # Konwersja ścieżki na format URL (ważne dla Windows i przeglądarek)
-            # Zamieniamy backslashe na forwardslashe i dodajemy file:///
-            url_path = full_path.replace("\\", "/")
-            if not url_path.startswith("/"):
-                url_path = "/" + url_path
+            # Otwieramy PDF jako Data URI (uniwersalne dla przeglądarek i telefonów)
+            data_url = f"data:application/pdf;base64,{b64_pdf}"
+            self.page.launch_url(data_url)
             
-            final_url = f"file://{url_path}"
-            print(f"Otwieranie URL: {final_url}")
-            
-            # Otwieramy plik w domyślnej aplikacji za pomocą Flet
-            self.page.launch_url(final_url)
         except Exception as ex:
             print(f"Błąd otwierania podglądu: {ex}")
             error_snack = ft.SnackBar(ft.Text(f"Błąd: {ex}"))
