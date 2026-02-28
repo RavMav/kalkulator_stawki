@@ -521,12 +521,13 @@ def main(page: ft.Page):
     # Inicjalizacja FilePicker
     save_file_picker = ft.FilePicker()
     
+    # Rejestracja FilePicker w overlay strony głównej
+    # Najpierw dodajemy FilePicker do overlay przed formularzem
+    page.overlay.append(save_file_picker)
+    page.update()
+    
     formularz = Formularz_glowny(save_file_picker)
     page.add(formularz)
-    
-    # Rejestracja FilePicker w overlay strony głównej
-    # Najpierw dodajemy formularz, potem overlay, aby uniknąć błędów renderowania w 0.80.x
-    page.overlay.append(save_file_picker)
     page.update()
 
 if __name__ == "__main__":
