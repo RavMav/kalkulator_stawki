@@ -17,7 +17,10 @@ class Formularz_glowny(ft.Column):
         self.prog_przestepstwa = 4608 * 5
         self.wybrany_tryb = None
         self.dzisiaj = datetime.now().strftime("%d-%m-%Y")
-
+        
+        # FilePicker do zapisu PDF
+        self.save_file_picker = ft.FilePicker()
+        
         # W klasie Twojego formularza:
         self.stawki = self.zaladuj_stawki()
 
@@ -182,7 +185,7 @@ class Formularz_glowny(ft.Column):
         )
         self.layout_formularza.max_width = 900
 
-        self.controls = [self.layout_formularza]
+        self.controls = [self.save_file_picker, self.layout_formularza]
 
     def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
@@ -269,49 +272,76 @@ class Formularz_glowny(ft.Column):
         
         return wynik
 
-    def otworz_podglad(self, e):
+    async def otworz_podglad(self, e):
         try:
             # Informacja o generowaniu
-            snack = ft.SnackBar(ft.Text("Generowanie podglądu..."), duration=2000)
+            snack = ft.SnackBar(ft.Text("Przygotowanie pliku PDF..."), duration=2000)
             self.page.overlay.append(snack)
             snack.open = True
             self.page.update()
 
-            pdf = FPDF()
-            # Dodajemy obsługę polskich znaków (czcionka Unicode)
-            font_path = os.path.join("assets", "Arial.ttf")
-            pdf.add_page()
+            # Zapisujemy PDF do zmiennej tymczasowej w celu późniejszego zapisu przez FilePicker
+            pdf_bytes = self.generuj_pdf_bytes()
             
-            tekst = self.sformatuj_wyniki()
+            # Otwieramy okno wyboru lokalizacji zapisu i czekamy na wynik (async w tej wersji Flet)
+            saved_path = await self.save_file_picker.save_file(
+                file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
+                allowed_extensions=["pdf"]
+            )
             
-            if os.path.exists(font_path):
-                pdf.add_font("Arial", "", font_path)
-                pdf.set_font("Arial", size=12)
-            else:
-                # Fallback do Helvetica z zamianą polskich znaków
-                pdf.set_font("Helvetica", size=12)
-                polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
-                                 "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
-                for k, v in polskie_znaki.items():
-                    tekst = tekst.replace(k, v)
-
-            for line in tekst.split("\n"):
-                pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-            
-            # Pobieramy PDF jako bajty i kodujemy do Base64
-            pdf_bytes = pdf.output()
-            b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-            
-            # Otwieramy PDF jako Data URI (uniwersalne dla przeglądarek i telefonów)
-            data_url = f"data:application/pdf;base64,{b64_pdf}"
-            self.page.launch_url(data_url)
+            if saved_path:
+                try:
+                    with open(saved_path, "wb") as f:
+                        f.write(pdf_bytes)
+                    
+                    success_snack = ft.SnackBar(ft.Text(f"Plik został zapisany!"), bgcolor=ft.Colors.GREEN_400)
+                    self.page.overlay.append(success_snack)
+                    success_snack.open = True
+                    
+                    # Próba otwarcia zapisanego pliku
+                    url_path = saved_path.replace("\\", "/")
+                    if not url_path.startswith("/"):
+                        url_path = "/" + url_path
+                    await self.page.launch_url(f"file://{url_path}")
+                    
+                except Exception as ex:
+                    error_snack = ft.SnackBar(ft.Text(f"Błąd zapisu: {ex}"))
+                    self.page.overlay.append(error_snack)
+                    error_snack.open = True
+                
+                self.page.update()
             
         except Exception as ex:
-            print(f"Błąd otwierania podglądu: {ex}")
+            print(f"Błąd przygotowania podglądu: {ex}")
             error_snack = ft.SnackBar(ft.Text(f"Błąd: {ex}"))
             self.page.overlay.append(error_snack)
             error_snack.open = True
             self.page.update()
+
+    def generuj_pdf_bytes(self):
+        pdf = FPDF()
+        font_path = os.path.join("assets", "Arial.ttf")
+        pdf.add_page()
+        
+        tekst = self.sformatuj_wyniki()
+        
+        if os.path.exists(font_path):
+            pdf.add_font("Arial", "", font_path)
+            pdf.set_font("Arial", size=12)
+        else:
+            pdf.set_font("Helvetica", size=12)
+            polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
+                             "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
+            for k, v in polskie_znaki.items():
+                tekst = tekst.replace(k, v)
+
+        for line in tekst.split("\n"):
+            pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        
+        return pdf.output()
+
+    def on_save_result(self, e: ft.FilePickerResultEvent):
+        pass
 
     def pobierz_liczbe(self, pole):
         surowy_tekst = pole.value.strip() if pole.value else ""
