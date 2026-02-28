@@ -65,7 +65,7 @@ class Formularz_glowny(ft.Column):
         self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 6})
 
         # 1.6 Przycisk Podglądu
-        self.przycisk_podglad = ft.ElevatedButton(
+        self.przycisk_podglad = ft.Button(
             content=ft.Row(
                 [
                     ft.Icon(ft.Icons.PRINT, color="white"),
@@ -270,6 +270,12 @@ class Formularz_glowny(ft.Column):
 
     def otworz_podglad(self, e):
         try:
+            # Informacja o generowaniu
+            snack = ft.SnackBar(ft.Text("Generowanie podglądu..."), duration=2000)
+            self.page.overlay.append(snack)
+            snack.open = True
+            self.page.update()
+
             filename = f"wynik_kalkulacji_z_{self.dzisiaj}.pdf"
             pdf = FPDF()
             pdf.add_page()
@@ -286,11 +292,23 @@ class Formularz_glowny(ft.Column):
             full_path = os.path.abspath(filename)
             pdf.output(full_path)
             
+            # Konwersja ścieżki na format URL (ważne dla Windows i przeglądarek)
+            # Zamieniamy backslashe na forwardslashe i dodajemy file:///
+            url_path = full_path.replace("\\", "/")
+            if not url_path.startswith("/"):
+                url_path = "/" + url_path
+            
+            final_url = f"file://{url_path}"
+            print(f"Otwieranie URL: {final_url}")
+            
             # Otwieramy plik w domyślnej aplikacji za pomocą Flet
-            # Dla mobilnych: system obsłuży podgląd i udostępnianie
-            e.page.launch_url(f"file://{full_path}")
+            self.page.launch_url(final_url)
         except Exception as ex:
             print(f"Błąd otwierania podglądu: {ex}")
+            error_snack = ft.SnackBar(ft.Text(f"Błąd: {ex}"))
+            self.page.overlay.append(error_snack)
+            error_snack.open = True
+            self.page.update()
 
     def pobierz_liczbe(self, pole):
         surowy_tekst = pole.value.strip() if pole.value else ""
@@ -481,6 +499,7 @@ def main(page: ft.Page):
     page.add(formularz)
 
 if __name__ == "__main__":
+    #ft.run(main)
     # Obsługa portu dla Render.com
     port = int(os.environ.get("PORT", 8550))
     # Używamy flet.run() zamiast flet.app(), zgodnie z najnowszą specyfikacją (0.80.0+)
