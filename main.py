@@ -4,15 +4,15 @@ import flet as ft
 from flet import FontWeight
 from fpdf import FPDF, XPos, YPos
 import os
-import base64
 from datetime import datetime
 
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
 class Formularz_glowny(ft.Column):
-    def __init__(self):
+    def __init__(self, save_file_picker: ft.FilePicker):
         super().__init__()
+        self.save_file_picker = save_file_picker
 
         self.prog_przestepstwa = 4608 * 5
         self.wybrany_tryb = None
@@ -281,7 +281,7 @@ class Formularz_glowny(ft.Column):
             pdf_bytes = self.generuj_pdf_bytes()
             
             # Otwieramy okno wyboru lokalizacji zapisu i czekamy na wynik (async w tej wersji Flet)
-            saved_path = await self.page.overlay[0].save_file(
+            saved_path = await self.save_file_picker.save_file(
                 file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
                 allowed_extensions=["pdf"],
                 src_bytes=pdf_bytes
@@ -518,11 +518,11 @@ def main(page: ft.Page):
     # Obsługa favicon
     page.favicon = "favicon.png"
     
-    formularz = Formularz_glowny()
-    
     # Rejestracja FilePicker w overlay strony głównej
     save_file_picker = ft.FilePicker()
     page.overlay.append(save_file_picker)
+    
+    formularz = Formularz_glowny(save_file_picker)
     
     page.add(formularz)
 
