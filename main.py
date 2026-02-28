@@ -18,9 +18,6 @@ class Formularz_glowny(ft.Column):
         self.wybrany_tryb = None
         self.dzisiaj = datetime.now().strftime("%d-%m-%Y")
         
-        # FilePicker do zapisu PDF
-        self.save_file_picker = ft.FilePicker()
-        
         # W klasie Twojego formularza:
         self.stawki = self.zaladuj_stawki()
 
@@ -185,7 +182,7 @@ class Formularz_glowny(ft.Column):
         )
         self.layout_formularza.max_width = 900
 
-        self.controls = [self.save_file_picker, self.layout_formularza]
+        self.controls = [self.layout_formularza]
 
     def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
@@ -284,30 +281,23 @@ class Formularz_glowny(ft.Column):
             pdf_bytes = self.generuj_pdf_bytes()
             
             # Otwieramy okno wyboru lokalizacji zapisu i czekamy na wynik (async w tej wersji Flet)
-            saved_path = await self.save_file_picker.save_file(
+            saved_path = await self.page.overlay[0].save_file(
                 file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
-                allowed_extensions=["pdf"]
+                allowed_extensions=["pdf"],
+                src_bytes=pdf_bytes
             )
             
             if saved_path:
-                try:
-                    with open(saved_path, "wb") as f:
-                        f.write(pdf_bytes)
-                    
-                    success_snack = ft.SnackBar(ft.Text(f"Plik został zapisany!"), bgcolor=ft.Colors.GREEN_400)
-                    self.page.overlay.append(success_snack)
-                    success_snack.open = True
-                    
-                    # Próba otwarcia zapisanego pliku
+                success_snack = ft.SnackBar(ft.Text(f"Plik został zapisany!"), bgcolor=ft.Colors.GREEN_400)
+                self.page.overlay.append(success_snack)
+                success_snack.open = True
+                
+                # Próba otwarcia zapisanego pliku (tylko na Windows/Desktop, na mobile/web save_file już obsłużył zapis)
+                if not (self.page.web or self.page.platform.is_mobile()):
                     url_path = saved_path.replace("\\", "/")
                     if not url_path.startswith("/"):
                         url_path = "/" + url_path
                     await self.page.launch_url(f"file://{url_path}")
-                    
-                except Exception as ex:
-                    error_snack = ft.SnackBar(ft.Text(f"Błąd zapisu: {ex}"))
-                    self.page.overlay.append(error_snack)
-                    error_snack.open = True
                 
                 self.page.update()
             
@@ -529,6 +519,11 @@ def main(page: ft.Page):
     page.favicon = "favicon.png"
     
     formularz = Formularz_glowny()
+    
+    # Rejestracja FilePicker w overlay strony głównej
+    save_file_picker = ft.FilePicker()
+    page.overlay.append(save_file_picker)
+    
     page.add(formularz)
 
 if __name__ == "__main__":
