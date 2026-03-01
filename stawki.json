@@ -1,0 +1,69 @@
+{
+  "papierosy_przemyt": {
+    "wc_mnoznik": 0.034,
+    "s_clo": 0.5760,
+    "s_akc": 1.40574879,
+    "s_vat": 0.23
+  },
+  "papierosy_paser": {
+    "wc_mnoznik": 0.054,
+    "s_akc": 1.40574879,
+    "s_vat": 0.23
+  },
+  "wodka_przemyt": {
+    "wc_jedn": 13,
+    "s_akc": 83.91,
+    "s_vat": 0.23
+  },
+  "wodka_paser": {
+    "s_akc": 83.91
+  },
+  "tyton_przemyt": {
+    "s_akc": 1329.928790,
+    "s_vat": 0.23,
+    "wc_jedn": 74,
+    "s_clo": 0.749
+  },
+  "tyton_paser": {
+    "s_akc": 1329.928790,
+    "s_vat": 0.23,
+    "wc_jedn": 130
+  },
+  "spirytus_przemyt": {
+    "s_akc": 83.91,
+    "s_vat": 0.23,
+    "wc_jedn": 17.50,
+    "s_clo": 19.20
+  },
+  "spirytus_paser": {
+    "s_akc": 83.91
+  },
+  "cygara_przemyt":{
+    "s_akc": 786,
+    "s_vat": 0.23,
+    "wc_jedn": 10,
+    "s_clo": 0.26
+  },
+  "cygara_paser": {
+    "s_akc": 786,
+    "s_vat": 0.23,
+    "wc_jedn": 13
+  },
+  "nowatorskie_przemyt": {
+    "s_akc": 1477.91,
+    "s_vat": 0.23,
+    "wc_jedn": 34,
+    "s_clo": 0.166
+  },
+  "nowatorskie_paser": {
+    "s_akc": 1477.91,
+    "s_vat": 0.23,
+    "wc_jedn": 40
+  },
+  "susz_paser": {
+    "s_akc": 1095.16,
+    "s_vat": 0.08,
+    "wc_jedn": 20.10
+  }
+
+}
