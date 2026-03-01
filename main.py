@@ -29,7 +29,7 @@ class Formularz_glowny(ft.Column):
             ),
             width=300,
             height=300,
-            alignment=ft.Alignment.CENTER,
+            alignment=ft.Alignment.CENTER if hasattr(ft.Alignment, "CENTER") else ft.Alignment.CENTER,
             animate=ft.Animation(600, ft.AnimationCurve.EASE_IN_OUT),
         )
 
@@ -82,7 +82,7 @@ class Formularz_glowny(ft.Column):
             col={"sm": 12, "md": 6}
         )
 
-        # 2. Menu rozwijane
+            # 2. Menu rozwijane
         self.menu_lista = ft.PopupMenuButton(
             content=ft.Container(
                 bgcolor=ft.Colors.GREEN_300,
@@ -139,7 +139,7 @@ class Formularz_glowny(ft.Column):
         self.kontener_statusu = ft.Container(
             content=ft.ResponsiveRow([self.pole_towar], alignment=ft.MainAxisAlignment.CENTER),
             padding=10, bgcolor="blue_grey_50", border_radius=8,
-            alignment=ft.alignment.Alignment.CENTER, visible=False
+            alignment=ft.Alignment.CENTER if hasattr(ft.Alignment, "CENTER") else ft.Alignment.CENTER, visible=False
         )
 
         self.sekcja_dane = ft.Card(
@@ -184,21 +184,21 @@ class Formularz_glowny(ft.Column):
 
         self.controls = [self.layout_formularza]
 
-    def menu_hover(self, e):
+    async def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
         e.control.bgcolor = ft.Colors.GREEN_900 if is_hovered else ft.Colors.GREEN_300
-        e.control.update()
+        await e.control.update_async() if hasattr(e.control, "update_async") else e.control.update()
 
-    def ustaw_tryb(self, tryb, nazwa, i1=None, i2=None, i3=None, v=False, a=False, c=False, av=False, avc=False):
+    async def ustaw_tryb(self, tryb, nazwa, i1=None, i2=None, i3=None, v=False, a=False, c=False, av=False, avc=False):
         self.wybrany_tryb = tryb
         # Animacja logo
         self.logo.width = 100
         self.logo.height = 100
-        self.logo.alignment = ft.Alignment.TOP_LEFT
+        self.logo.alignment = ft.Alignment.top_left if hasattr(ft.Alignment, "top_left") else ft.Alignment(-1, -1)
         self.logo_container.alignment = ft.MainAxisAlignment.START
         
-        self.layout_formularza.update()
-        self.wyczysc_formularz()
+        await self.layout_formularza.update_async() if hasattr(self.layout_formularza, "update_async") else self.layout_formularza.update()
+        await self.wyczysc_formularz()
         self.pole_towar.value = nazwa
         
         self.pole_input1.visible = i1 is not None
@@ -224,11 +224,11 @@ class Formularz_glowny(ft.Column):
         self.przycisk_podglad.disabled = True
         
         if i3 == "Kurs Euro":
-            self.pobierz_kurs_euro()
+            await self.pobierz_kurs_euro()
             
-        self.update()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
-    def wyczysc_formularz(self):
+    async def wyczysc_formularz(self):
         pola = [self.pole_input1, self.pole_input2, self.pole_input3, self.pole_akcyza, self.pole_vat, self.pole_clo, self.pole_av, self.pole_avc]
         for pole in pola:
             pole.value = ""
@@ -238,7 +238,7 @@ class Formularz_glowny(ft.Column):
         self.przycisk_oblicz.visible = False
         self.przycisk_podglad.visible = False
         self.przycisk_podglad.disabled = True
-        self.update()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
     def sformatuj_wyniki(self):
 
@@ -275,38 +275,49 @@ class Formularz_glowny(ft.Column):
             snack = ft.SnackBar(ft.Text("Przygotowanie pliku PDF..."), duration=2000)
             self.page.overlay.append(snack)
             snack.open = True
-            self.page.update()
+            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
             # Zapisujemy PDF do zmiennej tymczasowej w celu późniejszego zapisu przez FilePicker
             pdf_bytes = self.generuj_pdf_bytes()
             
             # Otwieramy okno wyboru lokalizacji zapisu i czekamy na wynik (async w tej wersji Flet)
-            saved_path = await self.save_file_picker.save_file(
-                file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
-                allowed_extensions=["pdf"],
-                src_bytes=pdf_bytes
-            )
+            # W wersji 0.80.5 FilePicker.save_file jest asynchroniczny i przyjmuje parametry.
+            # Zmieniamy parametry na bardziej kompatybilne dla tej wersji
+            try:
+                saved_path = await self.save_file_picker.save_file(
+                    file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
+                    allowed_extensions=["pdf"]
+                )
+            except TypeError:
+                # Na wypadek, gdyby save_file w tej wersji przyjmował inne argumenty
+                saved_path = await self.save_file_picker.save_file()
             
             if saved_path:
+                # W starszych wersjach flet-desktop/web zapisywanie bajtów odbywało się po zdarzeniu on_result
+                # Ale spróbujmy zapisać plik jeśli mamy ścieżkę (tylko desktop)
+                if not self.page.web:
+                    with open(saved_path, "wb") as f:
+                        f.write(pdf_bytes)
+
                 success_snack = ft.SnackBar(ft.Text(f"Plik został zapisany!"), bgcolor=ft.Colors.GREEN_400)
                 self.page.overlay.append(success_snack)
                 success_snack.open = True
                 
-                # Próba otwarcia zapisanego pliku (tylko na Windows/Desktop, na mobile/web save_file już obsłużył zapis)
+                # Próba otwarcia zapisanego pliku (tylko na Windows/Desktop)
                 if not (self.page.web or self.page.platform.is_mobile()):
                     url_path = saved_path.replace("\\", "/")
                     if not url_path.startswith("/"):
                         url_path = "/" + url_path
-                    await self.page.launch_url(f"file://{url_path}")
+                    await self.page.launch_url_async(f"file://{url_path}") if hasattr(self.page, "launch_url_async") else self.page.launch_url(f"file://{url_path}")
                 
-                self.page.update()
+                await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
             
         except Exception as ex:
             print(f"Błąd przygotowania podglądu: {ex}")
             error_snack = ft.SnackBar(ft.Text(f"Błąd: {ex}"))
             self.page.overlay.append(error_snack)
             error_snack.open = True
-            self.page.update()
+            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
     def generuj_pdf_bytes(self):
         pdf = FPDF()
@@ -333,18 +344,18 @@ class Formularz_glowny(ft.Column):
     def on_save_result(self, e: ft.FilePickerResultEvent):
         pass
 
-    def pobierz_liczbe(self, pole):
+    async def pobierz_liczbe(self, pole):
         surowy_tekst = pole.value.strip() if pole.value else ""
         pole.error = None
         
         if not surowy_tekst:
             pole.error = "Uzupełnij pole!"
-            self.update()
+            await self.update_async() if hasattr(self, "update_async") else self.update()
             return None
         
         if surowy_tekst == ".":
             pole.error = "Błędna liczba!"
-            self.update()
+            await self.update_async() if hasattr(self, "update_async") else self.update()
             return None
 
         if surowy_tekst.startswith("."):
@@ -355,25 +366,28 @@ class Formularz_glowny(ft.Column):
             return float(surowy_tekst)
         except ValueError:
             pole.error = "To nie jest liczba!"
-            self.update()
+            await self.update_async() if hasattr(self, "update_async") else self.update()
             return None
 
-    def pobierz_kurs_euro(self):
+    async def pobierz_kurs_euro(self):
         url = "https://api.nbp.pl/api/exchangerates/rates/a/eur/?format=json"
         try:
             headers = {'Accept': 'application/json', 'User-Agent': 'FletApp/1.0'}
-            response = requests.get(url, headers=headers, timeout=5)
-            if response.status_code == 200:
-                data = json.loads(response.content.decode("utf-8-sig"))
-                kurs = data["rates"][0]["mid"]
-                data_publikacji = data["rates"][0]["effectiveDate"]
-                self.pole_input3.value = f"{kurs:.4f}"
-                self.pole_input3.label = f"Kurs EUR (NBP: {data_publikacji})"
-                self.update()
+            # Używamy httpx dla asynchronicznych zapytań
+            import httpx
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, headers=headers, timeout=5)
+                if response.status_code == 200:
+                    data = response.json()
+                    kurs = data["rates"][0]["mid"]
+                    data_publikacji = data["rates"][0]["effectiveDate"]
+                    self.pole_input3.value = f"{kurs:.4f}"
+                    self.pole_input3.label = f"Kurs EUR (NBP: {data_publikacji})"
+                    await self.update_async() if hasattr(self, "update_async") else self.update()
         except Exception as ex:
             print(f"Błąd kursu: {ex}")
 
-    def przestepstwo(self, a=0, v=0, c=0):
+    async def przestepstwo(self, a=0, v=0, c=0):
         self.pole_akcyza.bgcolor = ft.Colors.RED_100 if a > self.prog_przestepstwa else ft.Colors.GREEN_50
         self.pole_vat.bgcolor = ft.Colors.RED_100 if v > self.prog_przestepstwa else ft.Colors.GREEN_50
         self.pole_clo.bgcolor = ft.Colors.RED_100 if c > self.prog_przestepstwa else ft.Colors.GREEN_50
@@ -381,7 +395,7 @@ class Formularz_glowny(ft.Column):
         if a > self.prog_przestepstwa: self.pole_akcyza.value += " - PRZESTĘPSTWO!"
         if v > self.prog_przestepstwa: self.pole_vat.value += " - PRZESTĘPSTWO!"
         if c > self.prog_przestepstwa: self.pole_clo.value += " - PRZESTĘPSTWO!"
-        self.update()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
     def zaladuj_stawki(self):
         # Najpierw próbujemy pobrać z sieci
@@ -402,10 +416,10 @@ class Formularz_glowny(ft.Column):
             print(f"Błąd odczytu lokalnego pliku stawek: {ex}")
             return {}
 
-    def glowny_oblicz(self, e):
-        i1 = self.pobierz_liczbe(self.pole_input1)
-        i2 = self.pobierz_liczbe(self.pole_input2) if self.pole_input2.visible else 0
-        i3 = self.pobierz_liczbe(self.pole_input3) if self.pole_input3.visible else 0
+    async def glowny_oblicz(self, e):
+        i1 = await self.pobierz_liczbe(self.pole_input1)
+        i2 = await self.pobierz_liczbe(self.pole_input2) if self.pole_input2.visible else 0
+        i3 = await self.pobierz_liczbe(self.pole_input3) if self.pole_input3.visible else 0
         
         if i1 is None or (self.pole_input2.visible and i2 is None) or (self.pole_input3.visible and i3 is None):
             return
@@ -502,37 +516,34 @@ class Formularz_glowny(ft.Column):
         self.pole_avc.value = f"{a + v + c:.0f} zł"
         
         self.przycisk_podglad.disabled = False
-        self.przestepstwo(a, v, c)
-        self.update()
+        await self.przestepstwo(a, v, c)
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
-def main(page: ft.Page):
+
+async def main(page: ft.Page):
+    # --- Konfiguracja strony ---
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.window.width = 950
-    page.window.height = 820
     page.scroll = ft.ScrollMode.AUTO
     page.padding = 10
-    
-    # Obsługa favicon
-    page.favicon = "favicon.png"
-    
-    # Inicjalizacja FilePicker
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    # --- 1. INICJALIZACJA FILEPICKERA ---
+    # Inicjalizacja FilePicker w wersji 0.80.5
     save_file_picker = ft.FilePicker()
-    
-    # Rejestracja FilePicker w overlay strony głównej
-    # Najpierw dodajemy FilePicker do overlay przed formularzem
     page.overlay.append(save_file_picker)
-    page.update()
-    
+
+    # Ważne dla asynchronicznego działania w starszych wersjach
+    await page.update_async() if hasattr(page, "update_async") else page.update()
+
+    # --- 2. DODANIE KLASY ---
     formularz = Formularz_glowny(save_file_picker)
-    page.add(formularz)
-    page.update()
+    await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
+
+    # Finalne odświeżenie strony
+    await page.update_async() if hasattr(page, "update_async") else page.update()
+
 
 if __name__ == "__main__":
-    #ft.run(main)
-    # Obsługa portu dla Render.com
-    port = int(os.environ.get("PORT", 8550))
-    # Używamy flet.run() zamiast flet.app(), zgodnie z najnowszą specyfikacją (0.80.0+)
-    ft.run(main, assets_dir="assets", port=port, view=None, host="0.0.0.0")
+    # Uruchomienie w trybie WEB_BROWSER jest kluczowe dla poprawnego działania na Renderze
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER)
