@@ -10,9 +10,10 @@ from datetime import datetime
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
 class Formularz_glowny(ft.Column):
-    def __init__(self, save_file_picker: ft.FilePicker):
+    def __init__(self):
         super().__init__()
-        self.save_file_picker = save_file_picker
+        self.save_file_picker = ft.FilePicker()
+        self.save_file_picker.on_result = self.on_save_result
 
         self.prog_przestepstwa = 4608 * 5
         self.wybrany_tryb = None
@@ -183,6 +184,11 @@ class Formularz_glowny(ft.Column):
         self.layout_formularza.max_width = 900
 
         self.controls = [self.layout_formularza]
+
+    async def did_mount_async(self):
+        if self.page:
+            self.page.overlay.append(self.save_file_picker)
+            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
     async def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
@@ -531,16 +537,8 @@ async def main(page: ft.Page):
     page.padding = 10
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
-    # --- 1. INICJALIZACJA FILEPICKERA ---
-    # Inicjalizacja FilePicker w wersji 0.80.5
-    save_file_picker = ft.FilePicker()
-    page.overlay.append(save_file_picker)
-
-    # Ważne dla asynchronicznego działania w starszych wersjach
-    await page.update_async() if hasattr(page, "update_async") else page.update()
-
-    # --- 2. DODANIE KLASY ---
-    formularz = Formularz_glowny(save_file_picker)
+    # --- 1. DODANIE KLASY ---
+    formularz = Formularz_glowny()
     await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
 
     # Finalne odświeżenie strony
