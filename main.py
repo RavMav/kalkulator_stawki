@@ -100,19 +100,19 @@ class Formularz_glowny(ft.Column):
                 border_radius=8,
             ),
             items=[
-                ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: self.ustaw_tryb("papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Papierosy paserstwo", on_click=lambda e: self.ustaw_tryb("papierosy_paser", "Papierosy paserstwo / nabycie", i1="Ilość papierosów (szt.)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wódka przemyt", on_click=lambda e: self.ustaw_tryb("wodka_przemyt", "Wódka przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wódka paserstwo", on_click=lambda e: self.ustaw_tryb("wodka_paser", "Wódka paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
-                ft.PopupMenuItem(content="Tytoń przemyt", on_click=lambda e: self.ustaw_tryb("tyton_przemyt", "Tytoń przemyt", i1="Ilość tytoniu (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Tytoń paserstwo", on_click=lambda e: self.ustaw_tryb("tyton_paser", "Tytoń paserstwo / nabycie", i1="Ilość tytoniu (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki przemyt", on_click=lambda e: self.ustaw_tryb("cygara_przemyt", "Cygara i cygaretki przemyt", i1="Ilość towaru (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki paserstwo", on_click=lambda e: self.ustaw_tryb("cygara_paser", "Cygara i cygaretki paserstwo / nabycie", i1="Ilość towaru (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Spirytus przemyt", on_click=lambda e: self.ustaw_tryb("spirytus_przemyt", "Spirytus przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", i3="Kurs Euro", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Spirytus paserstwo", on_click=lambda e: self.ustaw_tryb("spirytus_paser", "Spirytus paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
-                ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: self.ustaw_tryb("susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: self.ustaw_tryb("nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: self.ustaw_tryb("nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True)),
+                ft.PopupMenuItem(content="Papierosy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_paser", "Papierosy paserstwo / nabycie", i1="Ilość papierosów (szt.)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Wódka przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_przemyt", "Wódka przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Wódka paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_paser", "Wódka paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
+                ft.PopupMenuItem(content="Tytoń przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_przemyt", "Tytoń przemyt", i1="Ilość tytoniu (kg)", v=True, a=True, c=True, av=True, avc=True)),
+                ft.PopupMenuItem(content="Tytoń paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_paser", "Tytoń paserstwo / nabycie", i1="Ilość tytoniu (kg)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Cygara/cygaretki przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_przemyt", "Cygara i cygaretki przemyt", i1="Ilość towaru (kg)", v=True, a=True, c=True, av=True, avc=True)),
+                ft.PopupMenuItem(content="Cygara/cygaretki paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_paser", "Cygara i cygaretki paserstwo / nabycie", i1="Ilość towaru (kg)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Spirytus przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_przemyt", "Spirytus przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", i3="Kurs Euro", v=True, a=True, c=True, av=True, avc=True)),
+                ft.PopupMenuItem(content="Spirytus paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_paser", "Spirytus paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
+                ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True)),
+                ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True)),
             ],
             tooltip="Wybierz rodzaj towaru",
             menu_position=ft.PopupMenuPosition.UNDER
@@ -418,10 +418,13 @@ class Formularz_glowny(ft.Column):
 
     async def glowny_oblicz(self, e):
         i1 = await self.pobierz_liczbe(self.pole_input1)
+        if i1 is None:
+            return
+            
         i2 = await self.pobierz_liczbe(self.pole_input2) if self.pole_input2.visible else 0
         i3 = await self.pobierz_liczbe(self.pole_input3) if self.pole_input3.visible else 0
         
-        if i1 is None or (self.pole_input2.visible and i2 is None) or (self.pole_input3.visible and i3 is None):
+        if (self.pole_input2.visible and i2 is None) or (self.pole_input3.visible and i3 is None):
             return
 
         s = self.stawki.get(self.wybrany_tryb)
