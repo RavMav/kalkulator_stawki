@@ -292,7 +292,8 @@ class Formularz_glowny(ft.Column):
             try:
                 saved_path = await self.save_file_picker.save_file(
                     file_name=f"wynik_kalkulacji_z_{self.dzisiaj}.pdf",
-                    allowed_extensions=["pdf"]
+                    allowed_extensions=["pdf"],
+                    src_bytes=pdf_bytes,
                 )
             except TypeError:
                 # Na wypadek, gdyby save_file w tej wersji przyjmował inne argumenty
@@ -547,4 +548,4 @@ async def main(page: ft.Page):
 
 if __name__ == "__main__":
     # Uruchomienie w trybie WEB_BROWSER jest kluczowe dla poprawnego działania na Renderze
-    ft.app(target=main, view=ft.AppView.WEB_BROWSER)
+    ft.app(target=main, assets_dir="assets", view=ft.AppView.WEB_BROWSER)
