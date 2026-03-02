@@ -567,10 +567,12 @@ class Formularz_glowny(ft.Column):
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
             v = round((wc + a) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "wodka_paser":
             #s_akc = 83.91
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
+            w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "tyton_przemyt":
             #s_akc, s_vat, wc_jedn, s_clo = 1329.928790, 0.23, 74, 0.749
@@ -606,14 +608,14 @@ class Formularz_glowny(ft.Column):
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
-            w = 0
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "cygara_paser":
             #s_akc, s_vat, wc_jedn = 786, 0.23, 13
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
-            w = 0
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "nowatorskie_przemyt":
             #s_akc, s_vat, wc_jedn, s_clo = 1477.91, 0.23, 34, 0.166

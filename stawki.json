@@ -50,12 +50,14 @@
     "s_akc": 786,
     "s_vat": 0.23,
     "wc_jedn": 10,
-    "s_clo": 0.26
+    "s_clo": 0.26,
+    "s_wartosc": 0
   },
   "cygara_paser": {
     "s_akc": 786,
     "s_vat": 0.23,
-    "wc_jedn": 13
+    "wc_jedn": 13,
+    "s_wartosc": 0
   },
   "nowatorskie_przemyt": {
     "s_akc": 1477.91,
