@@ -5,6 +5,8 @@ from flet import FontWeight
 import os
 from datetime import datetime
 
+from fontTools.ttLib.scaleUpem import visit
+
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
@@ -72,7 +74,7 @@ class Formularz_glowny(ft.Column):
 
         self.pole_wartosc = ft.TextField(label="Wartość rynkowa", visible=False, read_only=True,border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50,col={"sm": 12, "md": 4})
 
-        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 6})
+        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 4})
 
         # 1.6 Przycisk Podglądu
         self.przycisk_podglad = ft.Button(
@@ -88,7 +90,17 @@ class Formularz_glowny(ft.Column):
             on_click=self.otworz_okno_numeru,
             visible=False,
             height=50,
-            col={"sm": 12, "md": 6}
+            col={"sm": 12, "md": 4}
+        )
+
+        self.przycisk_wyczysc = ft.OutlinedButton(
+            "WYCZYŚĆ",
+            icon=ft.Icons.CLEANING_SERVICES,
+            on_click=self.wyczysc_pola,
+            style=ft.ButtonStyle(color="red_400"),
+            visible=False, # Czerwony kolor dla wyróżnienia akcji resetu
+            height=50,
+            col={"sm": 12, "md": 4},
         )
 
             # 2. Menu rozwijane
@@ -188,7 +200,7 @@ class Formularz_glowny(ft.Column):
         )
 
         self.stopka_akcji = ft.Container(
-            content=ft.ResponsiveRow([self.przycisk_oblicz, self.przycisk_podglad], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
+            content=ft.ResponsiveRow([self.przycisk_oblicz, self.przycisk_podglad, self.przycisk_wyczysc], alignment=ft.MainAxisAlignment.CENTER, spacing=20),
             margin=ft.Margin.only(top=20)
         )
 
@@ -223,6 +235,25 @@ class Formularz_glowny(ft.Column):
             ],
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
+
+    def wyczysc_pola(self, e):
+        # Lista wszystkich pól, które mogą wymagać czyszczenia
+        pola = [
+            self.pole_input1, self.pole_input2, self.pole_wartosc, self.pole_nr_sprawy,
+            self.pole_akcyza, self.pole_vat, self.pole_clo, self.pole_av, self.pole_avc
+        ]
+
+        # Jeden "if" ukryty w pętli (tzw. list comprehension lub prosta pętla)
+        for pole in pola:
+            if pole.visible:
+                pole.value = ""
+                pole.bgcolor = ft.Colors.GREEN_50
+
+        # Dodatkowo ukrywamy przycisk PDF, bo dane zniknęły
+        self.przycisk_podglad.visible = False
+        self.przycisk_wyczysc.visible = False
+
+        self.page.update()
 
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
@@ -673,6 +704,7 @@ class Formularz_glowny(ft.Column):
         self.pole_avc.value = f"{a + v + c:.0f} zł"
         
         self.przycisk_podglad.visible = True
+        self.przycisk_wyczysc.visible = True
         await self.przestepstwo(a, v, c)
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
