@@ -3,7 +3,7 @@ import requests
 import flet as ft
 from flet import FontWeight
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
@@ -34,8 +34,8 @@ class Formularz_glowny(ft.Column):
                 src="Kas_winieta.jpg",
                 fit=ft.BoxFit.CONTAIN,
             ),
-            width=300,
-            height=300,
+            width=260,
+            height=260,
             alignment=ft.Alignment.CENTER if hasattr(ft.Alignment, "CENTER") else ft.Alignment.CENTER,
             animate=ft.Animation(600, ft.AnimationCurve.EASE_IN_OUT),
         )
@@ -122,8 +122,8 @@ class Formularz_glowny(ft.Column):
                 ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True,w=True)),
                 ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
                 ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)",i2="Ilość urządzeń", v=True,a=True, av=True, w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", i2="Ilość urządzeń", v=True, a=True, c=True, av=True, avc=True, w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)",i2="Ilość urządzeń (szt.)", v=True,a=True, av=True, w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", i2="Ilość urządzeń (szt.)", v=True, a=True, c=True, av=True, avc=True, w=True)),
             ],
             tooltip="Wybierz rodzaj towaru",
             menu_position=ft.PopupMenuPosition.UNDER,
@@ -649,7 +649,7 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
             self.akcyza_urzadzenie = round((s["s_akc2"] * i2) + a, 0)
             if i2 > 0 :
-                a = f"{self.akcyza_urzadzenie:.0f} zł"
+                a = self.akcyza_urzadzenie
             else :
                 a = round(s["s_akc"] * i1, 0)
 
@@ -694,5 +694,9 @@ async def main(page: ft.Page):
 
 
 if __name__ == "__main__":
-    # Uruchomienie w trybie WEB_BROWSER jest kluczowe dla poprawnego działania na Renderze
-    ft.app(target=main, assets_dir="assets", view=ft.AppView.WEB_BROWSER)
+    # Zmieniamy ft.app na ft.run
+    ft.run(
+        main,
+        assets_dir="assets",
+        view=ft.AppView.WEB_BROWSER
+    )
