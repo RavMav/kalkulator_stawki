@@ -65,10 +65,12 @@ class Formularz_glowny(ft.Column):
         
         self.pole_clo = ft.TextField(label="Należności cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
         
-        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 6})
+        self.pole_av = ft.TextField(label="Należności akcyza+vat", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
         
-        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 6})
-        
+        self.pole_avc = ft.TextField(label="Należności akcyza+vat+cło", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
+
+        self.pole_wartosc = ft.TextField(label="Wartość rynkowa", visible=False, read_only=True,border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50,col={"sm": 12, "md": 4})
+
         self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 6})
 
         # 1.6 Przycisk Podglądu
@@ -106,19 +108,21 @@ class Formularz_glowny(ft.Column):
                 border_radius=8,
             ),
             items=[
-                ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Papierosy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_paser", "Papierosy paserstwo / nabycie", i1="Ilość papierosów (szt.)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wódka przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_przemyt", "Wódka przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wódka paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_paser", "Wódka paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
-                ft.PopupMenuItem(content="Tytoń przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_przemyt", "Tytoń przemyt", i1="Ilość tytoniu (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Tytoń paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_paser", "Tytoń paserstwo / nabycie", i1="Ilość tytoniu (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_przemyt", "Cygara i cygaretki przemyt", i1="Ilość towaru (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_paser", "Cygara i cygaretki paserstwo / nabycie", i1="Ilość towaru (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Spirytus przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_przemyt", "Spirytus przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", i3="Kurs Euro", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Spirytus paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_paser", "Spirytus paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True)),
-                ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True)),
+                ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True, w=True)),
+                ft.PopupMenuItem(content="Papierosy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_paser", "Papierosy paserstwo / nabycie", i1="Ilość papierosów (szt.)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Wódka przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_przemyt", "Wódka przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Wódka paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_paser", "Wódka paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True,w=True)),
+                ft.PopupMenuItem(content="Tytoń przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_przemyt", "Tytoń przemyt", i1="Ilość tytoniu (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
+                ft.PopupMenuItem(content="Tytoń paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_paser", "Tytoń paserstwo / nabycie", i1="Ilość tytoniu (kg)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Cygara/cygaretki przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_przemyt", "Cygara i cygaretki przemyt", i1="Ilość towaru (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
+                ft.PopupMenuItem(content="Cygara/cygaretki paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_paser", "Cygara i cygaretki paserstwo / nabycie", i1="Ilość towaru (kg)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Spirytus przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_przemyt", "Spirytus przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", i3="Kurs Euro", v=True, a=True, c=True, av=True, avc=True,w=True)),
+                ft.PopupMenuItem(content="Spirytus paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_paser", "Spirytus paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True,w=True)),
+                ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
+                ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True,w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)", v=True,a=True, av=True, w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", v=True, a=True, c=True, av=True, avc=True, w=True)),
             ],
             tooltip="Wybierz rodzaj towaru",
             menu_position=ft.PopupMenuPosition.UNDER,
@@ -175,7 +179,7 @@ class Formularz_glowny(ft.Column):
                     ft.Text("PODSUMOWANIE NALEŻNOŚCI", size=13, weight=ft.FontWeight.BOLD, color="green_800"),
                     ft.Divider(height=1, color="green_100"),
                     ft.ResponsiveRow([self.pole_akcyza, self.pole_vat, self.pole_clo], spacing=20),
-                    ft.ResponsiveRow([self.pole_av, self.pole_avc], spacing=20),
+                    ft.ResponsiveRow([self.pole_wartosc, self.pole_av, self.pole_avc], spacing=20),
                 ], spacing=15),
                 padding=20,
             ),
@@ -241,7 +245,7 @@ class Formularz_glowny(ft.Column):
         e.control.bgcolor = ft.Colors.GREEN_900 if is_hovered else ft.Colors.GREEN_300
         await e.control.update_async() if hasattr(e.control, "update_async") else e.control.update()
 
-    async def ustaw_tryb(self, tryb, nazwa, i1=None, i2=None, i3=None, v=False, a=False, c=False, av=False, avc=False):
+    async def ustaw_tryb(self, tryb, nazwa, i1=None, i2=None, i3=None, v=False, a=False, c=False, av=False, avc=False, w=False):
         self.wybrany_tryb = tryb
         # Animacja logo
         self.logo.width = 100
@@ -267,6 +271,7 @@ class Formularz_glowny(ft.Column):
         self.pole_clo.visible = c
         self.pole_av.visible = av
         self.pole_avc.visible = avc
+        self.pole_wartosc.visible = w
         
         self.przycisk_oblicz.visible = True
         self.kontener_statusu.visible = True
@@ -280,7 +285,7 @@ class Formularz_glowny(ft.Column):
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
     async def wyczysc_formularz(self):
-        pola = [self.pole_input1, self.pole_input2, self.pole_input3, self.pole_akcyza, self.pole_vat, self.pole_clo, self.pole_av, self.pole_avc]
+        pola = [self.pole_input1, self.pole_input2, self.pole_input3, self.pole_akcyza, self.pole_vat, self.pole_clo, self.pole_wartosc, self.pole_av, self.pole_avc]
         for pole in pola:
             pole.value = ""
             pole.error = None
@@ -414,6 +419,7 @@ class Formularz_glowny(ft.Column):
         if self.pole_akcyza.visible: dane_tabeli.append(("Podatek akcyzowy", self.pole_akcyza.value))
         if self.pole_clo.visible: dane_tabeli.append(("Cło", self.pole_clo.value))
         if self.pole_vat.visible: dane_tabeli.append(("Podatek VAT", self.pole_vat.value))
+        if self.pole_wartosc.visible: dane_tabeli.append(("Wartość rynkowa", self.pole_wartosc.value))
         if self.pole_av.visible: dane_tabeli.append(("SUMA (Akcyza+VAT)", self.pole_av.value))
         if self.pole_avc.visible: dane_tabeli.append(("SUMA (Akcyza+Vat+Cło)", self.pole_avc.value))
 
@@ -538,7 +544,7 @@ class Formularz_glowny(ft.Column):
         s = self.stawki.get(self.wybrany_tryb)
         if not s: return  # Zabezpieczenie
 
-        a, v, c = 0, 0, 0
+        a, v, c, w = 0, 0, 0, 0
         
         if self.wybrany_tryb == "papierosy_przemyt":
             #wc_szt = 34 / 1000
@@ -547,12 +553,14 @@ class Formularz_glowny(ft.Column):
             a = round(s["s_akc"] * i1, 0)
             c = round(wc * s["s_clo"], 0)
             v = round((wc + c + a) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
     
         elif self.wybrany_tryb == "papierosy_paser":
             wc = round(s["wc_mnoznik"] * i1, 0)
             #s_akc, s_vat = 1.40574879, 0.23
             a = round(s["s_akc"] * i1, 0)
             v = round((wc + a) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "wodka_przemyt":
             #s_akc, s_vat, wc_jedn = 83.91, 0.23, 13
@@ -570,12 +578,14 @@ class Formularz_glowny(ft.Column):
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "tyton_paser":
             #s_akc, s_vat, wc_jedn = 1329.928790, 0.23, 130
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "spirytus_przemyt":
             #s_akc, s_vat, wc_jedn = 83.91, 0.23, 17.50
@@ -583,10 +593,12 @@ class Formularz_glowny(ft.Column):
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
             v = round((wc + a + c) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "spirytus_paser":
             #s_akc = 83.91
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "cygara_przemyt":
             #s_akc, s_vat, wc_jedn, s_clo = 786, 0.23, 10, 0.26
@@ -594,12 +606,14 @@ class Formularz_glowny(ft.Column):
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
+            w = 0
 
         elif self.wybrany_tryb == "cygara_paser":
             #s_akc, s_vat, wc_jedn = 786, 0.23, 13
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
+            w = 0
 
         elif self.wybrany_tryb == "nowatorskie_przemyt":
             #s_akc, s_vat, wc_jedn, s_clo = 1477.91, 0.23, 34, 0.166
@@ -607,22 +621,40 @@ class Formularz_glowny(ft.Column):
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "nowatorskie_paser":
             #s_akc, s_vat, wc_jedn = 1477.91, 0.23, 40
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "susz_paser":
             #s_akc, s_vat, wc_jedn = 1095.16, 0.08, 20.10
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
+
+        elif self.wybrany_tryb == "e-pap_przemyt":
+            wc = round(s["wc_jedn"] * i1, 0)
+            a = round(s["s_akc"] * i1, 0)
+            c = round(s["s_clo"] * wc, 0)
+            v = round((a + wc + c) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
+
+        elif self.wybrany_tryb == "e-pap_paser":
+            wc = round(s["wc_jedn"] * i1, 0)
+            a = round(s["s_akc"] * i1, 0)
+            c = round(s["s_clo"] * wc, 0)
+            v = round((a + wc + c) * s["s_vat"], 0)
+            w = round(s["s_wartosc"] * i1, 0)
 
         self.pole_akcyza.value = f"{a:.0f} zł"
         self.pole_vat.value = f"{v:.0f} zł"
         self.pole_clo.value = f"{c:.0f} zł"
+        self.pole_wartosc.value = f"{w:.0f} zł"
         self.pole_av.value = f"{a + v:.0f} zł"
         self.pole_avc.value = f"{a + v + c:.0f} zł"
         
