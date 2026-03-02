@@ -2,7 +2,6 @@ import json
 import requests
 import flet as ft
 from flet import FontWeight
-from fpdf import FPDF, XPos, YPos
 import os
 from datetime import datetime
 
@@ -14,10 +13,13 @@ class Formularz_glowny(ft.Column):
         super().__init__()
         self.save_file_picker = ft.FilePicker()
         self.save_file_picker.on_result = self.on_save_result
+        self.expand = True
+        #self.width = 1000  # Lub inna wartość większa niż Twój max_width
+        self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
         self.prog_przestepstwa = 4608 * 5
         self.wybrany_tryb = None
-        self.dzisiaj = datetime.now().strftime("%d-%m-%Y")
+        self.dzisiaj = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
         
         # W klasie Twojego formularza:
         self.stawki = self.zaladuj_stawki()
@@ -70,16 +72,17 @@ class Formularz_glowny(ft.Column):
         self.przycisk_podglad = ft.Button(
             content=ft.Row(
                 [
-                    ft.Icon(ft.Icons.PRINT, color="white"),
-                    ft.Text("Drukuj / Podgląd", color="white", weight=FontWeight.BOLD),
+                    ft.Icon(ft.Icons.PICTURE_AS_PDF, color="white"),
+                    ft.Text("Drukuj / Zapisz", color="white", weight=FontWeight.BOLD),
                 ],
                 tight=True,
                 alignment=ft.MainAxisAlignment.CENTER
             ),
             bgcolor=ft.Colors.BLUE_GREY_600,
-            on_click=self.otworz_podglad,
+            on_click=self.otworz_okno_numeru,
             visible=False,
             disabled=True,
+            height=50,
             col={"sm": 12, "md": 6}
         )
 
@@ -116,25 +119,33 @@ class Formularz_glowny(ft.Column):
                 ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True)),
             ],
             tooltip="Wybierz rodzaj towaru",
-            menu_position=ft.PopupMenuPosition.UNDER
+            menu_position=ft.PopupMenuPosition.UNDER,
+            width=250
+
         )
 
         # 3. Wygląd formularza
         self.naglowek = ft.Container(
             content=ft.ResponsiveRow([
-                ft.Row([
-                    ft.Container(
-                        content=ft.Icon(ft.Icons.ADD_HOME, color="white", size=30),
-                        bgcolor="green_700", padding=10, border_radius=10,
-                    ),
-                    ft.Column([
-                        ft.Text("KALKULATOR", size=20, weight=ft.FontWeight.BOLD, color="green_900"),
-                        ft.Text("CELNO-SKARBOWY 2026", size=12, color="grey_600", italic=True),
-                    ], spacing=0)
-                ], col={"sm": 12, "md": 6}, alignment=ft.MainAxisAlignment.START),
-                ft.Container(self.menu_lista, col={"sm": 12, "md": 6}, alignment=ft.Alignment.CENTER_RIGHT if os.name != "nt" else ft.Alignment.CENTER_LEFT)
-            ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, vertical_alignment=ft.CrossAxisAlignment.CENTER),
-            margin=ft.Margin.only(bottom=10)
+                ft.Column([
+                    ft.Text("KALKULATOR", size=20, weight=ft.FontWeight.BOLD, color="green_900"),
+                    ft.Text("CELNO-SKARBOWY 2026", size=12, color="grey_600", italic=True),
+                ],
+                    spacing=0,
+                    col={"sm": 12, "md": 5},
+                    alignment=ft.MainAxisAlignment.START
+                ),
+                ft.Container(
+                    self.menu_lista,
+                    col={"sm": 12, "md": 7},
+                    #expand=True,
+                    alignment=ft.Alignment.CENTER_RIGHT #if os.name != "nt" else ft.Alignment.CENTER_LEFT,
+                    )
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            padding=ft.padding.only(left=20, right=20, bottom=10, top=10)
         )
 
         self.kontener_statusu = ft.Container(
@@ -184,6 +195,39 @@ class Formularz_glowny(ft.Column):
         self.layout_formularza.max_width = 900
 
         self.controls = [self.layout_formularza]
+
+        # Pole na numer sprawy
+        self.pole_nr_sprawy = ft.TextField(
+            label="Numer sprawy (opcjonalnie)",
+            hint_text="np. DS/123/2026",
+            width=300,
+            border_color="green_700"
+        )
+
+        # Okno dialogowe
+        self.dialog_numeru = ft.AlertDialog(
+            title=ft.Text("DODAJ NUMER SPRAWY", weight=ft.FontWeight.BOLD),
+            content=ft.Column([
+                ft.Text("Możesz dodać numer sprawy, który pojawi się na wydruku:", size=12),
+                self.pole_nr_sprawy
+            ], tight=True),
+            actions=[
+                ft.TextButton("Dalej", on_click=self.finalny_zapis_pdf)
+            ],
+            actions_alignment=ft.MainAxisAlignment.CENTER,
+        )
+
+    async def finalny_zapis_pdf(self, e):
+        # 1. Zamykamy okno dialogowe
+        self.dialog_numeru.open = False
+        self.page.update()  # Ważne: używamy await na Renderze
+
+        # 2. Wywołujemy Twój pierwotny kod zapisu
+        # Przekazujemy 'e', aby FilePicker wiedział, kto go wywołał
+        await self.otworz_podglad(e)
+        # czyścimy pole numeru sprawy
+        self.pole_nr_sprawy.value = ""
+
 
     async def did_mount_async(self):
         if self.page:
@@ -327,26 +371,73 @@ class Formularz_glowny(ft.Column):
             await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
     def generuj_pdf_bytes(self):
+        from fpdf import FPDF
         pdf = FPDF()
-        font_path = os.path.join("assets", "Arial.ttf")
         pdf.add_page()
-        
-        tekst = self.sformatuj_wyniki()
-        
+
+        font_path = os.path.join("assets", "Arial.ttf")
+
+        # 1. Obsługa czcionki (Twój sprawdzony mechanizm)
         if os.path.exists(font_path):
             pdf.add_font("Arial", "", font_path)
-            pdf.set_font("Arial", size=12)
+            pdf.add_font("Arial", "B", font_path)
+            base_font = "Arial"
         else:
-            pdf.set_font("Helvetica", size=12)
-            polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z",
-                             "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z", "Ż": "Z"}
-            for k, v in polskie_znaki.items():
-                tekst = tekst.replace(k, v)
+            base_font = "Helvetica"
 
-        for line in tekst.split("\n"):
-            pdf.cell(200, 10, text=line, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
-        
+        # --- NAGŁÓWEK ---
+        pdf.set_font(base_font, size=16 if base_font == "Arial" else 14)
+        pdf.set_text_color(0, 100, 0)  # Zielony jak w Twoim UI
+        pdf.cell(0, 10, "RAPORT KALKULACJI CELNO-SKARBOWEJ", ln=True, align='C')
+        pdf.ln(5)
+
+        # --- TABELA Z DANYMI (Zamiast tekstowego split("\n")) ---
+        pdf.set_text_color(0, 0, 0)
+        pdf.set_font(base_font, size=11)
+
+        # Przygotowanie danych do tabeli (filtrowanie widocznych pól)
+        dane_tabeli = [
+            ("Numer sprawy", self.pole_nr_sprawy.value),
+            ("Rodzaj towaru", self.pole_towar.value),
+            ("Data wygenerowania", self.dzisiaj),
+            ("", "")  # Odstęp
+        ]
+
+        # Dane wejściowe
+        if self.pole_input1.visible: dane_tabeli.append((self.pole_input1.label, self.pole_input1.value))
+        if self.pole_input2.visible: dane_tabeli.append((self.pole_input2.label, self.pole_input2.value))
+        if self.pole_input3.visible: dane_tabeli.append((self.pole_input3.label, self.pole_input3.value))
+
+        dane_tabeli.append(("", ""))  # Odstęp
+
+        # Wyniki
+        if self.pole_akcyza.visible: dane_tabeli.append(("Podatek akcyzowy", self.pole_akcyza.value))
+        if self.pole_clo.visible: dane_tabeli.append(("Cło", self.pole_clo.value))
+        if self.pole_vat.visible: dane_tabeli.append(("Podatek VAT", self.pole_vat.value))
+        if self.pole_av.visible: dane_tabeli.append(("SUMA (Akcyza+VAT)", self.pole_av.value))
+        if self.pole_avc.visible: dane_tabeli.append(("SUMA (Akcyza+Vat+Cło)", self.pole_avc.value))
+
+        # Rysowanie tabeli (Metoda .table() tworzy ładne ramki)
+        with pdf.table(width=170, col_widths=(100, 70), align="C") as table:
+            for row_data in dane_tabeli:
+                row = table.row()
+                for item in row_data:
+                    # Jeśli nie ma czcionki Arial, podmieniamy znaki w locie
+                    if base_font == "Helvetica":
+                        polskie_znaki = {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z",
+                                         "ż": "z",
+                                         "Ą": "A", "Ć": "C", "Ę": "E", "Ł": "L", "Ń": "N", "Ó": "O", "Ś": "S", "Ź": "Z",
+                                         "Ż": "Z"}
+                        for k, v in polskie_znaki.items():
+                            item = item.replace(k, v)
+                    row.cell(item)
+
         return pdf.output()
+
+    def otworz_okno_numeru(self, e):
+        self.page.overlay.append(self.dialog_numeru)
+        self.dialog_numeru.open = True
+        self.page.update()
 
     def on_save_result(self, e: ft.FilePickerResultEvent):
         pass
@@ -535,7 +626,7 @@ async def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
     page.scroll = ft.ScrollMode.AUTO
-    page.padding = 10
+    page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     # --- 1. DODANIE KLASY ---
