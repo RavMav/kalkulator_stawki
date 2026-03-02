@@ -80,6 +80,7 @@
   },
   "e-pap_przemyt": {
     "s_akc": 1.44,
+    "s_akc2": 40,
     "s_vat": 0.23,
     "wc_jedn": 0.38,
     "s_clo": 0.065,
@@ -87,6 +88,7 @@
   },
   "e-pap_paser": {
     "s_akc": 2.88,
+    "s_akc2": 40,
     "s_vat": 0.23,
     "s_clo": 0.065,
     "wc_jedn": 0.38,

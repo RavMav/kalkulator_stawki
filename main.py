@@ -18,6 +18,7 @@ class Formularz_glowny(ft.Column):
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
         self.prog_przestepstwa = 4608 * 5
+        self.akcyza_urzadzenie = 0
         self.wybrany_tryb = None
         # Ustawienie poprawnej strefy czasowej (Polska +1h względem UTC na serwerach)
         teraz = datetime.now() #+ timedelta(hours=1)
@@ -121,8 +122,8 @@ class Formularz_glowny(ft.Column):
                 ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True,w=True)),
                 ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
                 ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)", v=True,a=True, av=True, w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", v=True, a=True, c=True, av=True, avc=True, w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)",i2="Ilość urządzeń", v=True,a=True, av=True, w=True)),
+                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", i2="Ilość urządzeń", v=True, a=True, c=True, av=True, avc=True, w=True)),
             ],
             tooltip="Wybierz rodzaj towaru",
             menu_position=ft.PopupMenuPosition.UNDER,
@@ -640,11 +641,17 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "e-pap_przemyt":
+
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
+            self.akcyza_urzadzenie = round((s["s_akc2"] * i2) + a, 0)
+            if i2 > 0 :
+                a = f"{self.akcyza_urzadzenie:.0f} zł"
+            else :
+                a = round(s["s_akc"] * i1, 0)
 
         elif self.wybrany_tryb == "e-pap_paser":
             wc = round(s["wc_jedn"] * i1, 0)
@@ -652,6 +659,11 @@ class Formularz_glowny(ft.Column):
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
+            self.akcyza_urzadzenie = round((s["s_akc2"] * i2) + a, 0)
+            if i2 > 0:
+                a = self.akcyza_urzadzenie
+            else:
+                a = round(s["s_akc"] * i1, 0)
 
         self.pole_akcyza.value = f"{a:.0f} zł"
         self.pole_vat.value = f"{v:.0f} zł"
