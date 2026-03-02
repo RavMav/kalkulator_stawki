@@ -3,7 +3,7 @@ import requests
 import flet as ft
 from flet import FontWeight
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
@@ -19,7 +19,10 @@ class Formularz_glowny(ft.Column):
 
         self.prog_przestepstwa = 4608 * 5
         self.wybrany_tryb = None
-        self.dzisiaj = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+        # Ustawienie poprawnej strefy czasowej (Polska +1h względem UTC na serwerach)
+        teraz = datetime.now() #+ timedelta(hours=1)
+        self.dzisiaj = teraz.strftime("%d-%m-%y_%H-%M-%S")
+
         
         # W klasie Twojego formularza:
         self.stawki = self.zaladuj_stawki()
@@ -81,7 +84,6 @@ class Formularz_glowny(ft.Column):
             bgcolor=ft.Colors.BLUE_GREY_600,
             on_click=self.otworz_okno_numeru,
             visible=False,
-            disabled=True,
             height=50,
             col={"sm": 12, "md": 6}
         )
@@ -212,7 +214,7 @@ class Formularz_glowny(ft.Column):
                 self.pole_nr_sprawy
             ], tight=True),
             actions=[
-                ft.TextButton("Dalej", on_click=self.finalny_zapis_pdf)
+                ft.TextButton("Dalej", width=100, on_click=self.finalny_zapis_pdf)
             ],
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
@@ -270,8 +272,7 @@ class Formularz_glowny(ft.Column):
         self.kontener_statusu.visible = True
         self.sekcja_wyniki.visible = True
         self.sekcja_dane.visible = True
-        self.przycisk_podglad.visible = True
-        self.przycisk_podglad.disabled = True
+        self.przycisk_podglad.visible = False
         
         if i3 == "Kurs Euro":
             await self.pobierz_kurs_euro()
@@ -287,7 +288,6 @@ class Formularz_glowny(ft.Column):
             pole.bgcolor = ft.Colors.GREEN_50
         self.przycisk_oblicz.visible = False
         self.przycisk_podglad.visible = False
-        self.przycisk_podglad.disabled = True
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
     def sformatuj_wyniki(self):
@@ -431,6 +431,12 @@ class Formularz_glowny(ft.Column):
                         for k, v in polskie_znaki.items():
                             item = item.replace(k, v)
                     row.cell(item)
+            # Przejdź na dół strony
+        # Przejdź na 28mm od dołu strony
+        pdf.set_y(-30)
+        pdf.set_font("Arial", size=8)
+        # Używamy cell zamiast multi_cell, bo zajmuje tylko jedną linię
+        pdf.cell(0, 10, "Niniejszy wydruk ma charakter informacyjny i nie stanowi dokumentu urzędowego.", align="C", ln=False)
 
         return pdf.output()
 
@@ -515,6 +521,10 @@ class Formularz_glowny(ft.Column):
             return {}
 
     async def glowny_oblicz(self, e):
+        # Aktualizacja daty i godziny przy każdym przeliczeniu (poprawka dla Render)
+        teraz = datetime.now() #+ timedelta(hours=1)
+        self.dzisiaj = teraz.strftime("%d-%m-%y_%H-%M-%S")
+        
         i1 = await self.pobierz_liczbe(self.pole_input1)
         if i1 is None:
             return
@@ -616,7 +626,7 @@ class Formularz_glowny(ft.Column):
         self.pole_av.value = f"{a + v:.0f} zł"
         self.pole_avc.value = f"{a + v + c:.0f} zł"
         
-        self.przycisk_podglad.disabled = False
+        self.przycisk_podglad.visible = True
         await self.przestepstwo(a, v, c)
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
