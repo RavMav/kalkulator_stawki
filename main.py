@@ -18,6 +18,12 @@ class Formularz_glowny(ft.Column):
         #self.max_width = 1000  # Lub inna wartość większa niż Twój max_width
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
+        # KLUCZ: Tylko ten kontener może się przewijać
+        self.scroll = ft.ScrollMode.AUTO
+        self.expand = True  # Pozwala kolumnie zająć całe miejsce
+        self.spacing = 15
+
+
         self.prog_przestepstwa = 4608 * 5
         self.akcyza_urzadzenie = 0
         self.wybrany_tryb = None
@@ -50,19 +56,20 @@ class Formularz_glowny(ft.Column):
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False
+            on_submit=self.obsluga_enter, enable_suggestions=False, height=50, content_padding=15
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False,
+            on_submit=self.obsluga_enter, enable_suggestions=False, height=50, content_padding=15
         )
         
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            height=50, content_padding=15
         )
         
         self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
@@ -752,9 +759,11 @@ async def main(page: ft.Page):
     page.index_head = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>'
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    page.scroll = ft.ScrollMode.AUTO
-    page.padding = 30
+    page.scroll = None
+    #page.padding = 30
+    page.padding = ft.padding.only(top=20, left=10, right=10, bottom=300)
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.START
     # 1. Sprawdzamy system operacyjny na samym początku
     is_ios = page.platform == ft.PagePlatform.IOS
 
