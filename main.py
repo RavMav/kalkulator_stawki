@@ -295,7 +295,8 @@ class Formularz_glowny(ft.Column):
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
         self.dialog_numeru.open = False
-        self.page.update()  # Ważne: używamy await na Renderze
+        #self.page.update()  # Ważne: używamy await na Renderze
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
         # 2. Wywołujemy Twój pierwotny kod zapisu
         # Przekazujemy 'e', aby FilePicker wiedział, kto go wywołał
