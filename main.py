@@ -10,19 +10,13 @@ from datetime import datetime
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
 class Formularz_glowny(ft.Column):
-    def __init__(self, is_ios=False):
+    def __init__(self):
         super().__init__()
         self.save_file_picker = ft.FilePicker()
         self.save_file_picker.on_result = self.on_save_result
         self.expand = True
         #self.max_width = 1000  # Lub inna wartość większa niż Twój max_width
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
-
-        # KLUCZ: Tylko ten kontener może się przewijać
-        self.scroll = ft.ScrollMode.AUTO
-        self.expand = True  # Pozwala kolumnie zająć całe miejsce
-        self.spacing = 15
-
 
         self.prog_przestepstwa = 4608 * 5
         self.akcyza_urzadzenie = 0
@@ -53,23 +47,20 @@ class Formularz_glowny(ft.Column):
         self.pole_towar = ft.Text("", size=20, weight=ft.FontWeight.BOLD, color="green", text_align=ft.TextAlign.CENTER)
         
         self.pole_input1 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
-            keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False, height=50, content_padding=15
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.PHONE,
+            on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input2 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
-            keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False, height=50, content_padding=15
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.PHONE,
+            on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input3 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
-            height=50, content_padding=15
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.PHONE,
         )
         
         self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
@@ -166,6 +157,16 @@ class Formularz_glowny(ft.Column):
             width=250
 
         )
+        self.pasek_ios_row = ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
+
+        self.pasek_ios = ft.Container(
+            content=self.pasek_ios_row,
+            bgcolor=ft.Colors.GREEN_700,
+            padding=ft.padding.symmetric(horizontal=10),
+            height=45,
+            visible=False,
+            border_radius=ft.border_radius.only(top_left=10, top_right=10)
+        )
 
         # 3. Wygląd formularza
         self.naglowek = ft.Container(
@@ -230,7 +231,7 @@ class Formularz_glowny(ft.Column):
 
         self.layout_formularza = ft.Container(
             content=ft.Column([
-                self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
+                self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,self.pasek_ios,
             ], spacing=10),
             padding=30, bgcolor=ft.Colors.WHITE, border_radius=20,
             border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12")
@@ -260,21 +261,56 @@ class Formularz_glowny(ft.Column):
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
 
-    async def obsluga_enter(self, e):
-        import asyncio
+    async def pokaz_pasek_ios(self, e):
+        if not self.page.platform == ft.PagePlatform.IOS:
+            return
 
+        # Czyścimy stare przyciski
+        self.pasek_ios_row.controls.clear()
+
+        # LOGIKA PRZYCISKÓW:
         if e.control == self.pole_input1:
             if self.pole_input2.visible:
-                # Krótka przerwa pozwala iOS "zamknąć" akcję pierwszego pola
-                await asyncio.sleep(0)
+                # Jeśli jest pole 2, dajemy strzałkę "DALEJ"
+                self.pasek_ios_row.controls.append(
+                    ft.TextButton("DALEJ ▼", on_click=lambda _: self.pole_input2.focus(),
+                                  style=ft.ButtonStyle(color="white"))
+                )
+            else:
+                # Jeśli nie ma pola 2, od razu "OBLICZ"
+                self.pasek_ios_row.controls.append(
+                    ft.TextButton("OBLICZ √", on_click=lambda _: self.glowny_oblicz(None),
+                                  style=ft.ButtonStyle(color="white"))
+                )
+
+        elif e.control == self.pole_input2:
+            # W drugim polu zawsze "OBLICZ" lub powrót do 1
+            self.pasek_ios_row.controls.append(
+                ft.Row([
+                    ft.IconButton(ft.Icons.KEYBOARD_ARROW_UP, on_click=lambda _: self.pole_input1.focus(),
+                                  icon_color="white"),
+                    ft.TextButton("OBLICZ √", on_click=lambda _: self.glowny_oblicz(None),
+                                  style=ft.ButtonStyle(color="white"))
+                ])
+            )
+
+        self.pasek_ios.visible = True
+        await self.update_async() if hasattr(self, "update_async") else self.update()
+
+
+    async def obsluga_enter(self, e):
+        if e.control == self.pole_input1:
+            # Jeśli pole 2 jest widoczne, skocz do niego
+            if self.pole_input2.visible:
                 await self.pole_input2.focus()
             else:
+                # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
                 await self.glowny_oblicz(None)
 
         elif e.control == self.pole_input2:
+            # Enter w drugim polu zawsze wyzwala obliczenia
             await self.glowny_oblicz(None)
 
-        # Używamy tylko wersji async, żeby nie tracić czasu na sprawdzanie hasattr
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
 
@@ -302,14 +338,19 @@ class Formularz_glowny(ft.Column):
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
         self.dialog_numeru.open = False
-        #self.page.update()  # Ważne: używamy await na Renderze
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        self.page.update()  # Ważne: używamy await na Renderze
 
         # 2. Wywołujemy Twój pierwotny kod zapisu
         # Przekazujemy 'e', aby FilePicker wiedział, kto go wywołał
         await self.otworz_podglad(e)
         # czyścimy pole numeru sprawy
         self.pole_nr_sprawy.value = ""
+
+
+    async def did_mount_async(self):
+        if self.page:
+            self.page.overlay.append(self.save_file_picker)
+            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
     async def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
@@ -371,6 +412,7 @@ class Formularz_glowny(ft.Column):
         self.przycisk_oblicz.visible = False
         self.przycisk_podglad.visible = False
         await self.update_async() if hasattr(self, "update_async") else self.update()
+
 
     def sformatuj_wyniki(self):
 
@@ -756,19 +798,14 @@ class Formularz_glowny(ft.Column):
 
 async def main(page: ft.Page):
     # --- Konfiguracja strony ---
-    page.index_head = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>'
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    page.scroll = None
-    #page.padding = 30
-    page.padding = ft.padding.only(top=20, left=10, right=10, bottom=300)
+    page.scroll = ft.ScrollMode.AUTO
+    page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.vertical_alignment = ft.MainAxisAlignment.START
-    # 1. Sprawdzamy system operacyjny na samym początku
-    is_ios = page.platform == ft.PagePlatform.IOS
 
     # --- 1. DODANIE KLASY ---
-    formularz = Formularz_glowny(is_ios=is_ios)
+    formularz = Formularz_glowny()
     await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
 
     # Finalne odświeżenie strony
