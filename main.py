@@ -48,16 +48,14 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.TEXT,
-            on_submit=self.obsluga_enter, enable_suggestions=False,on_focus=self.pokaz_pasek_ios, # WYWOŁUJE PASEK
-            on_blur=self.ukryj_pasek_ios,  # UKRYWA PASEK PO WYJŚCIU Z POLA
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.NUMBER,
+            on_submit=self.obsluga_enter, enable_suggestions=False, on_blur=self.obsluga_enter,
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.TEXT,
-            on_submit=self.obsluga_enter, enable_suggestions=False, on_focus=self.pokaz_pasek_ios, # WYWOŁUJE PASEK
-            on_blur=self.ukryj_pasek_ios,  # UKRYWA PASEK PO WYJŚCIU Z POLA
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            on_submit=self.obsluga_enter, enable_suggestions=False, on_blur=self.obsluga_enter,
         )
         
         self.pole_input3 = ft.TextField(
@@ -159,20 +157,6 @@ class Formularz_glowny(ft.Column):
             width=250
 
         )
-        self.pasek_ios_row = ft.Row(alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
-
-        self.pasek_ios = ft.Container(
-            content=self.pasek_ios_row,
-            bgcolor=ft.Colors.GREEN_700,
-            height=45,
-            visible=False,
-            # POZYCJONOWANIE NA GÓRZE:
-            top=10,  # Odstęp od góry strony (możesz dać np. 70, żeby był pod logiem)
-            left=10,
-            right=10,
-            border_radius=10,
-            shadow=ft.BoxShadow(blur_radius=10, color="black45"),
-        )
 
         # 3. Wygląd formularza
         self.naglowek = ft.Container(
@@ -237,7 +221,7 @@ class Formularz_glowny(ft.Column):
 
         self.layout_formularza = ft.Container(
             content=ft.Column([
-                self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,self.pasek_ios,
+                self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
             ], spacing=10),
             padding=30, bgcolor=ft.Colors.WHITE, border_radius=20,
             border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12")
@@ -267,63 +251,21 @@ class Formularz_glowny(ft.Column):
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
 
-    async def pokaz_pasek_ios(self, e):
-        if not self.page.platform == ft.PagePlatform.IOS:
-            return
-
-        # Czyścimy stare przyciski
-        self.pasek_ios_row.controls.clear()
-
-        # LOGIKA PRZYCISKÓW:
-        if e.control == self.pole_input1:
-            if self.pole_input2.visible:
-                # Jeśli jest pole 2, dajemy strzałkę "DALEJ"
-                self.pasek_ios_row.controls.append(
-                    ft.TextButton("DALEJ ▼", on_click=lambda _: self.pole_input2.focus(),
-                                  style=ft.ButtonStyle(color="white"))
-                )
-            else:
-                # Jeśli nie ma pola 2, od razu "OBLICZ"
-                self.pasek_ios_row.controls.append(
-                    ft.TextButton("OBLICZ √", on_click=lambda _: self.glowny_oblicz(None),
-                                  style=ft.ButtonStyle(color="white"))
-                )
-
-        elif e.control == self.pole_input2:
-            # W drugim polu zawsze "OBLICZ" lub powrót do 1
-            self.pasek_ios_row.controls.append(
-                ft.Row([
-                    ft.IconButton(ft.Icons.KEYBOARD_ARROW_UP, on_click=lambda _: self.pole_input1.focus(),
-                                  icon_color="white"),
-                    ft.TextButton("OBLICZ √", on_click=lambda _: self.glowny_oblicz(None),
-                                  style=ft.ButtonStyle(color="white"))
-                ])
-            )
-
-        self.pasek_ios.visible = True
-        await self.update_async() if hasattr(self, "update_async") else self.update()
-
-    async def ukryj_pasek_ios(self, e):
-        if self.page.platform == ft.PagePlatform.IOS:
-            # Małe opóźnienie (0.1s), żeby kliknięcie w przycisk "DALEJ" na pasku
-            # zdążyło zadziałać przed jego zniknięciem
-            import asyncio
-            await asyncio.sleep(0.1)
-            self.pasek_ios.visible = False
-            await self.update_async() if hasattr(self, "update_async") else self.update()
-
-
     async def obsluga_enter(self, e):
+        # Jeśli pole 1 straciło fokus (blur) lub naciśnięto Enter
         if e.control == self.pole_input1:
             # Jeśli pole 2 jest widoczne, skocz do niego
             if self.pole_input2.visible:
+                # Tylko jeśli pole 2 nie ma jeszcze wartości lub jesteśmy w on_submit
+                # (on_blur wywoła się też gdy użytkownik sam kliknie w inne pole)
                 await self.pole_input2.focus()
             else:
-                # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
+                # Jeśli pole 2 jest ukryte, licz od razu
                 await self.glowny_oblicz(None)
 
+        # Jeśli pole 2 straciło fokus (blur) lub naciśnięto Enter
         elif e.control == self.pole_input2:
-            # Enter w drugim polu zawsze wyzwala obliczenia
+            # W drugim polu zawsze wyzwala obliczenia
             await self.glowny_oblicz(None)
 
         await self.update_async() if hasattr(self, "update_async") else self.update()
@@ -817,17 +759,14 @@ async def main(page: ft.Page):
     # --- Konfiguracja strony ---
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    #page.scroll = ft.ScrollMode.AUTO
-    page.scroll=None
+    page.scroll = ft.ScrollMode.AUTO
+    #page.scroll=None
     page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     # --- 1. DODANIE KLASY ---
     formularz = Formularz_glowny()
     await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
-
-    if formularz.pasek_ios:
-        page.overlay.append(formularz.pasek_ios)
 
 
     # Finalne odświeżenie strony
