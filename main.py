@@ -166,13 +166,12 @@ class Formularz_glowny(ft.Column):
             bgcolor=ft.Colors.GREEN_700,
             height=45,
             visible=False,
-            # KLUCZOWE ZMIANY:
-            bottom=10,  # Lekki odstęp od dołu, żeby "odkleił" się od krawędzi
-            left=10,  # Marginesy boczne sprawią, że będzie wyglądał jak pływający widget
+            # POZYCJONOWANIE NA GÓRZE:
+            top=10,  # Odstęp od góry strony (możesz dać np. 70, żeby był pod logiem)
+            left=10,
             right=10,
             border_radius=10,
-            shadow=ft.BoxShadow(blur_radius=15, color="black"),
-            animate_opacity=200,  # Płynne pojawianie się
+            shadow=ft.BoxShadow(blur_radius=10, color="black45"),
         )
 
         # 3. Wygląd formularza
@@ -818,7 +817,8 @@ async def main(page: ft.Page):
     # --- Konfiguracja strony ---
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    page.scroll = ft.ScrollMode.AUTO
+    #page.scroll = ft.ScrollMode.AUTO
+    page.scroll=None
     page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
