@@ -50,14 +50,14 @@ class Formularz_glowny(ft.Column):
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False,  shift_enter=is_ios,
+            on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False,  shift_enter=is_ios,
+            on_submit=self.obsluga_enter, enable_suggestions=False,
         )
         
         self.pole_input3 = ft.TextField(
@@ -254,19 +254,21 @@ class Formularz_glowny(ft.Column):
         )
 
     async def obsluga_enter(self, e):
+        import asyncio
+
         if e.control == self.pole_input1:
-            # Jeśli pole 2 jest widoczne, skocz do niego
             if self.pole_input2.visible:
+                # Krótka przerwa pozwala iOS "zamknąć" akcję pierwszego pola
+                await asyncio.sleep(0)
                 await self.pole_input2.focus()
             else:
-                # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
                 await self.glowny_oblicz(None)
 
         elif e.control == self.pole_input2:
-            # Enter w drugim polu zawsze wyzwala obliczenia
             await self.glowny_oblicz(None)
 
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        # Używamy tylko wersji async, żeby nie tracić czasu na sprawdzanie hasattr
+        await self.update_async()
 
 
     async def wyczysc_pola(self, e):
