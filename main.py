@@ -162,14 +162,15 @@ class Formularz_glowny(ft.Column):
         self.pasek_ios = ft.Container(
             content=self.pasek_ios_row,
             bgcolor=ft.Colors.GREEN_700,
-            padding=ft.padding.symmetric(horizontal=10),
             height=45,
             visible=False,
-            # DODAJ TO:
-            bottom=0,  # Przyklej do dołu dostępnego obszaru
-            left=0,  # Rozciągnij od lewej
-            right=0,  # Do prawej
-            shadow=ft.BoxShadow(blur_radius=10, color="black38")
+            # KLUCZOWE ZMIANY:
+            bottom=10,  # Lekki odstęp od dołu, żeby "odkleił" się od krawędzi
+            left=10,  # Marginesy boczne sprawią, że będzie wyglądał jak pływający widget
+            right=10,
+            border_radius=10,
+            shadow=ft.BoxShadow(blur_radius=15, color="black"),
+            animate_opacity=200,  # Płynne pojawianie się
         )
 
         # 3. Wygląd formularza
