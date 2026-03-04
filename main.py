@@ -268,7 +268,7 @@ class Formularz_glowny(ft.Column):
             await self.glowny_oblicz(None)
 
         # Używamy tylko wersji async, żeby nie tracić czasu na sprawdzanie hasattr
-        await self.update_async()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
 
     async def wyczysc_pola(self, e):
