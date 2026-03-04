@@ -48,7 +48,7 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.NUMBER,
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False, on_blur=self.obsluga_enter,
         )
         
@@ -224,7 +224,7 @@ class Formularz_glowny(ft.Column):
             content=ft.Column([
                 self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
             ], spacing=10),
-            padding=30, bgcolor=ft.Colors.WHITE, border_radius=20,
+            padding=ft.padding.only(left=20, right=20, top=10, bottom=40), bgcolor=ft.Colors.WHITE, border_radius=20,
             border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12")
         )
         self.layout_formularza.max_width = 900
@@ -353,12 +353,12 @@ class Formularz_glowny(ft.Column):
             await self.pobierz_kurs_euro()
             
         await self.update_async() if hasattr(self, "update_async") else self.update()
-        # Teraz dajemy fokus na pierwsze widoczne pole
-        if self.pole_input1.visible:
-            await self.pole_input1.focus()
-        elif self.pole_input2.visible:
-            await self.pole_input2.focus()
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        # Teraz dajemy fokus na pierwsze widoczne pole (opcjonalnie na iOS)
+        # if self.pole_input1.visible:
+        #     await self.pole_input1.focus()
+        # elif self.pole_input2.visible:
+        #     await self.pole_input2.focus()
+        # await self.update_async() if hasattr(self, "update_async") else self.update()
 
     async def wyczysc_formularz(self):
         pola = [self.pole_input1, self.pole_input2, self.pole_input3, self.pole_akcyza, self.pole_vat, self.pole_clo, self.pole_wartosc, self.pole_av, self.pole_avc]
@@ -762,7 +762,8 @@ async def main(page: ft.Page):
     page.title = "Kalkulator należności celno-skarbowych"
     page.scroll = ft.ScrollMode.HIDDEN
     #page.scroll=None
-    page.padding = 30
+    page.padding = 10
+    page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     # --- 1. DODANIE KLASY ---
