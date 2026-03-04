@@ -47,21 +47,21 @@ class Formularz_glowny(ft.Column):
         self.pole_towar = ft.Text("", size=20, weight=ft.FontWeight.BOLD, color="green", text_align=ft.TextAlign.CENTER)
         
         self.pole_input1 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input2 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
             keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False,
         )
         
         self.pole_input3 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
         )
         
