@@ -749,6 +749,7 @@ class Formularz_glowny(ft.Column):
 
 async def main(page: ft.Page):
     # --- Konfiguracja strony ---
+    page.index_head = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>'
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
     page.scroll = ft.ScrollMode.AUTO
