@@ -252,16 +252,25 @@ class Formularz_glowny(ft.Column):
         )
 
     async def obsluga_enter(self, e):
+        # Sprawdzenie systemu w trakcie obsługi zdarzenia
+        is_ios = self.page.platform == ft.PagePlatform.IOS
+
         if e.control == self.pole_input1:
             # Jeśli pole 2 jest widoczne, skocz do niego
             if self.pole_input2.visible:
                 await self.pole_input2.focus()
             else:
                 # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
+                if is_ios:
+                    # Na iOS, aby zamknąć klawiaturę, można spróbować zabrać fokus z pola
+                    e.control.unfocus()
                 await self.glowny_oblicz(None)
 
         elif e.control == self.pole_input2:
             # Enter w drugim polu zawsze wyzwala obliczenia
+            if is_ios:
+                # Na iOS, aby zamknąć klawiaturę, można spróbować zabrać fokus z pola
+                e.control.unfocus()
             await self.glowny_oblicz(None)
 
         await self.update_async() if hasattr(self, "update_async") else self.update()
@@ -302,6 +311,14 @@ class Formularz_glowny(ft.Column):
 
     async def did_mount_async(self):
         if self.page:
+            # Rozdzielenie konfiguracji dla iOS i Android
+            if self.page.platform == ft.PagePlatform.IOS:
+                # Na iOS używamy TEXT, aby umożliwić przycisk "Done" na klawiaturze,
+                # zachowując filtrację cyfrową z pola wejściowego.
+                for pole in [self.pole_input1, self.pole_input2, self.pole_input3]:
+                    pole.keyboard_type = ft.KeyboardType.TEXT
+                    pole.enable_suggestions = False
+            
             self.page.overlay.append(self.save_file_picker)
             await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
