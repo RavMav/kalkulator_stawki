@@ -165,7 +165,11 @@ class Formularz_glowny(ft.Column):
             padding=ft.padding.symmetric(horizontal=10),
             height=45,
             visible=False,
-            border_radius=ft.border_radius.only(top_left=10, top_right=10)
+            # DODAJ TO:
+            bottom=0,  # Przyklej do dołu dostępnego obszaru
+            left=0,  # Rozciągnij od lewej
+            right=0,  # Do prawej
+            shadow=ft.BoxShadow(blur_radius=10, color="black38")
         )
 
         # 3. Wygląd formularza
@@ -796,6 +800,8 @@ class Formularz_glowny(ft.Column):
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
 
+
+
 async def main(page: ft.Page):
     # --- Konfiguracja strony ---
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -807,6 +813,10 @@ async def main(page: ft.Page):
     # --- 1. DODANIE KLASY ---
     formularz = Formularz_glowny()
     await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
+
+    if formularz.pasek_ios:
+        page.overlay.append(formularz.pasek_ios)
+
 
     # Finalne odświeżenie strony
     await page.update_async() if hasattr(page, "update_async") else page.update()
