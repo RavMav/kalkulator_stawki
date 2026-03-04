@@ -48,19 +48,22 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.NUMBER,
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
+            keyboard_type=ft.KeyboardType.TEXT if self.page and self.page.platform == ft.PagePlatform.IOS else ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
+            keyboard_type=ft.KeyboardType.TEXT if self.page and self.page.platform == ft.PagePlatform.IOS else ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
+            keyboard_type=ft.KeyboardType.TEXT if self.page and self.page.platform == ft.PagePlatform.IOS else ft.KeyboardType.NUMBER,
         )
         
         self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
