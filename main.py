@@ -5,7 +5,6 @@ from flet import FontWeight
 import os
 from datetime import datetime
 
-from fontTools.ttLib.scaleUpem import visit
 
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
@@ -16,7 +15,7 @@ class Formularz_glowny(ft.Column):
         self.save_file_picker = ft.FilePicker()
         self.save_file_picker.on_result = self.on_save_result
         self.expand = True
-        #self.width = 1000  # Lub inna wartość większa niż Twój max_width
+        #self.max_width = 1000  # Lub inna wartość większa niż Twój max_width
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
         self.prog_przestepstwa = 4608 * 5
@@ -49,17 +48,19 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            on_submit=self.obsluga_enter
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            on_submit=self.obsluga_enter
         )
         
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
         )
         
         self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
@@ -74,7 +75,21 @@ class Formularz_glowny(ft.Column):
 
         self.pole_wartosc = ft.TextField(label="Wartość rynkowa", visible=False, read_only=True,border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50,col={"sm": 12, "md": 4})
 
-        self.przycisk_oblicz = ft.Button("Oblicz", on_click=self.glowny_oblicz, visible=False, bgcolor=ft.Colors.GREEN_300, color=ft.Colors.WHITE, height=50, col={"sm": 12, "md": 4})
+        self.przycisk_oblicz = ft.Button(
+            content=ft.Row(
+                [
+                    ft.Icon(ft.Icons.CALCULATE, color="white"),
+                    ft.Text("Oblicz", color="white", weight=FontWeight.BOLD),
+                ],
+                alignment = ft.MainAxisAlignment.CENTER
+            ),
+            on_click=self.glowny_oblicz,
+            visible=False,
+            bgcolor=ft.Colors.GREEN_300,
+            color=ft.Colors.WHITE,
+            height=50,
+            col={"sm": 12, "md": 4}
+        )
 
         # 1.6 Przycisk Podglądu
         self.przycisk_podglad = ft.Button(
@@ -236,7 +251,23 @@ class Formularz_glowny(ft.Column):
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
 
-    def wyczysc_pola(self, e):
+    async def obsluga_enter(self, e):
+        if e.control == self.pole_input1:
+            # Jeśli pole 2 jest widoczne, skocz do niego
+            if self.pole_input2.visible:
+                await self.pole_input2.focus()
+            else:
+                # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
+                await self.glowny_oblicz(None)
+
+        elif e.control == self.pole_input2:
+            # Enter w drugim polu zawsze wyzwala obliczenia
+            await self.glowny_oblicz(None)
+
+        await self.update_async() if hasattr(self, "update_async") else self.update()
+
+
+    async def wyczysc_pola(self, e):
         # Lista wszystkich pól, które mogą wymagać czyszczenia
         pola = [
             self.pole_input1, self.pole_input2, self.pole_wartosc, self.pole_nr_sprawy,
@@ -253,7 +284,9 @@ class Formularz_glowny(ft.Column):
         self.przycisk_podglad.visible = False
         self.przycisk_wyczysc.visible = False
 
-        self.page.update()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self.pole_input1.focus()
+        await self.update_async() if hasattr(self, "update_async") else self.update()
 
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
@@ -314,6 +347,12 @@ class Formularz_glowny(ft.Column):
         if i3 == "Kurs Euro":
             await self.pobierz_kurs_euro()
             
+        await self.update_async() if hasattr(self, "update_async") else self.update()
+        # Teraz dajemy fokus na pierwsze widoczne pole
+        if self.pole_input1.visible:
+            await self.pole_input1.focus()
+        elif self.pole_input2.visible:
+            await self.pole_input2.focus()
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
     async def wyczysc_formularz(self):
