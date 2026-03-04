@@ -14,7 +14,7 @@ class Formularz_glowny(ft.Column):
         super().__init__()
         self.save_file_picker = ft.FilePicker()
         self.save_file_picker.on_result = self.on_save_result
-        self.expand = True
+        # self.expand = True
         #self.max_width = 1000  # Lub inna wartość większa niż Twój max_width
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
@@ -219,6 +219,7 @@ class Formularz_glowny(ft.Column):
             margin=ft.Margin.only(top=20)
         )
 
+        self.scroll = ft.ScrollMode.AUTO
         self.layout_formularza = ft.Container(
             content=ft.Column([
                 self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
@@ -759,7 +760,7 @@ async def main(page: ft.Page):
     # --- Konfiguracja strony ---
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
-    page.scroll = ft.ScrollMode.AUTO
+    page.scroll = ft.ScrollMode.HIDDEN
     #page.scroll=None
     page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
