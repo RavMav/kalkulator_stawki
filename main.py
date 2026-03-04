@@ -48,19 +48,21 @@ class Formularz_glowny(ft.Column):
         
         self.pole_input1 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.PHONE,
-            on_submit=self.obsluga_enter, enable_suggestions=False
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.TEXT,
+            on_submit=self.obsluga_enter, enable_suggestions=False,on_focus=self.pokaz_pasek_ios, # WYWOŁUJE PASEK
+            on_blur=self.ukryj_pasek_ios,  # UKRYWA PASEK PO WYJŚCIU Z POLA
         )
         
         self.pole_input2 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.PHONE,
-            on_submit=self.obsluga_enter, enable_suggestions=False
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.TEXT,
+            on_submit=self.obsluga_enter, enable_suggestions=False, on_focus=self.pokaz_pasek_ios, # WYWOŁUJE PASEK
+            on_blur=self.ukryj_pasek_ios,  # UKRYWA PASEK PO WYJŚCIU Z POLA
         )
         
         self.pole_input3 = ft.TextField(
             input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.PHONE,
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.TEXT,
         )
         
         self.pole_akcyza = ft.TextField(label="Należności akcyza", visible=False, read_only=True, border_color=ft.Colors.GREEN_300, bgcolor=ft.Colors.GREEN_50, col={"sm": 12, "md": 4})
@@ -301,6 +303,15 @@ class Formularz_glowny(ft.Column):
 
         self.pasek_ios.visible = True
         await self.update_async() if hasattr(self, "update_async") else self.update()
+
+    async def ukryj_pasek_ios(self, e):
+        if self.page.platform == ft.PagePlatform.IOS:
+            # Małe opóźnienie (0.1s), żeby kliknięcie w przycisk "DALEJ" na pasku
+            # zdążyło zadziałać przed jego zniknięciem
+            import asyncio
+            await asyncio.sleep(0.1)
+            self.pasek_ios.visible = False
+            await self.update_async() if hasattr(self, "update_async") else self.update()
 
 
     async def obsluga_enter(self, e):
