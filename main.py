@@ -10,7 +10,7 @@ from datetime import datetime
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
 
 class Formularz_glowny(ft.Column):
-    def __init__(self, is_ios=False):
+    def __init__(self):
         super().__init__()
         self.save_file_picker = ft.FilePicker()
         self.save_file_picker.on_result = self.on_save_result
@@ -47,21 +47,19 @@ class Formularz_glowny(ft.Column):
         self.pole_towar = ft.Text("", size=20, weight=ft.FontWeight.BOLD, color="green", text_align=ft.TextAlign.CENTER)
         
         self.pole_input1 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True,
-            keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, autofocus=True, keyboard_type=ft.KeyboardType.NUMBER,
             on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input2 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
-            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4},
-            keyboard_type=ft.KeyboardType.TEXT if is_ios else ft.KeyboardType.NUMBER,
-            on_submit=self.obsluga_enter, enable_suggestions=False,
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
+            visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
+            on_submit=self.obsluga_enter, enable_suggestions=False
         )
         
         self.pole_input3 = ft.TextField(
-            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""), text_size=16,
+            input_filter=ft.InputFilter(allow=True, regex_string=r"^\d*\.?\d*$", replacement_string=""),
             visible=False, border_color=ft.Colors.GREEN_300, col={"sm": 12, "md": 4}, keyboard_type=ft.KeyboardType.NUMBER,
         )
         
@@ -254,20 +252,18 @@ class Formularz_glowny(ft.Column):
         )
 
     async def obsluga_enter(self, e):
-        import asyncio
-
         if e.control == self.pole_input1:
+            # Jeśli pole 2 jest widoczne, skocz do niego
             if self.pole_input2.visible:
-                # Krótka przerwa pozwala iOS "zamknąć" akcję pierwszego pola
-                await asyncio.sleep(0)
                 await self.pole_input2.focus()
             else:
+                # Jeśli pole 2 jest ukryte (np. tylko jedna dana do wpisania), licz od razu
                 await self.glowny_oblicz(None)
 
         elif e.control == self.pole_input2:
+            # Enter w drugim polu zawsze wyzwala obliczenia
             await self.glowny_oblicz(None)
 
-        # Używamy tylko wersji async, żeby nie tracić czasu na sprawdzanie hasattr
         await self.update_async() if hasattr(self, "update_async") else self.update()
 
 
@@ -295,14 +291,19 @@ class Formularz_glowny(ft.Column):
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
         self.dialog_numeru.open = False
-        #self.page.update()  # Ważne: używamy await na Renderze
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        self.page.update()  # Ważne: używamy await na Renderze
 
         # 2. Wywołujemy Twój pierwotny kod zapisu
         # Przekazujemy 'e', aby FilePicker wiedział, kto go wywołał
         await self.otworz_podglad(e)
         # czyścimy pole numeru sprawy
         self.pole_nr_sprawy.value = ""
+
+
+    async def did_mount_async(self):
+        if self.page:
+            self.page.overlay.append(self.save_file_picker)
+            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
 
     async def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
@@ -749,17 +750,14 @@ class Formularz_glowny(ft.Column):
 
 async def main(page: ft.Page):
     # --- Konfiguracja strony ---
-    page.index_head = '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>'
     page.theme_mode = ft.ThemeMode.LIGHT
     page.title = "Kalkulator należności celno-skarbowych"
     page.scroll = ft.ScrollMode.AUTO
     page.padding = 30
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    # 1. Sprawdzamy system operacyjny na samym początku
-    is_ios = page.platform == ft.PagePlatform.IOS
 
     # --- 1. DODANIE KLASY ---
-    formularz = Formularz_glowny(is_ios=is_ios)
+    formularz = Formularz_glowny()
     await page.add_async(formularz) if hasattr(page, "add_async") else page.add(formularz)
 
     # Finalne odświeżenie strony
