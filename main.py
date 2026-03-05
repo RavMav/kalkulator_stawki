@@ -8,6 +8,105 @@ from datetime import datetime
 
 # URL do pliku ze stawkami w sieci
 STAWKI_URL = "https://raw.githubusercontent.com/RavMav/kalkulator_stawki/main/stawki.json"
+TRYBY_KONFIG = {
+    "papierosy_przemyt": {
+        "menu": "Papierosy przemyt",
+        "nazwa": "Papierosy przemyt",
+        "i1": "Ilość papierosów (szt.)",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+    "papierosy_paser": {
+        "menu": "Papierosy paserstwo",
+        "nazwa": "Papierosy paserstwo / nabycie",
+        "i1": "Ilość papierosów (szt.)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "wodka_przemyt": {
+        "menu": "Wódka przemyt",
+        "nazwa": "Wódka przemyt",
+        "i1": "Ilość litrów (l.)",
+        "i2": "Zawartość alkoholu (%)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "wodka_paser": {
+        "menu": "Wódka paserstwo",
+        "nazwa": "Wódka paserstwo / nabycie",
+        "i1": "Ilość litrów (l.)",
+        "i2": "Zawartość alkoholu (%)",
+        "wyniki": {"a": True, "w": True},
+    },
+    "tyton_przemyt": {
+        "menu": "Tytoń przemyt",
+        "nazwa": "Tytoń przemyt",
+        "i1": "Ilość tytoniu (kg)",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+    "tyton_paser": {
+        "menu": "Tytoń paserstwo",
+        "nazwa": "Tytoń paserstwo / nabycie",
+        "i1": "Ilość tytoniu (kg)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "cygara_przemyt": {
+        "menu": "Cygara/cygaretki przemyt",
+        "nazwa": "Cygara i cygaretki przemyt",
+        "i1": "Ilość towaru (kg)",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+    "cygara_paser": {
+        "menu": "Cygara/cygaretki paserstwo",
+        "nazwa": "Cygara i cygaretki paserstwo / nabycie",
+        "i1": "Ilość towaru (kg)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "spirytus_przemyt": {
+        "menu": "Spirytus przemyt",
+        "nazwa": "Spirytus przemyt",
+        "i1": "Ilość litrów (l.)",
+        "i2": "Zawartość alkoholu (%)",
+        "i3": "Kurs Euro",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+    "spirytus_paser": {
+        "menu": "Spirytus paserstwo",
+        "nazwa": "Spirytus paserstwo / nabycie",
+        "i1": "Ilość litrów (l.)",
+        "i2": "Zawartość alkoholu (%)",
+        "wyniki": {"a": True, "w": True},
+    },
+    "susz_paser": {
+        "menu": "Susz tytoniowy paserstwo",
+        "nazwa": "Susz tytoniowy paserstwo / nabycie",
+        "i1": "Ilość suszu tytoniowego (kg)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "nowatorskie_przemyt": {
+        "menu": "Wyroby nowatorskie przemyt",
+        "nazwa": "Wyroby nowatorskie przemyt",
+        "i1": "Ilość wyrobów nowatorskich (kg)",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+    "nowatorskie_paser": {
+        "menu": "Wyroby nowatorskie paserstwo",
+        "nazwa": "Wyroby nowatorskie paserstwo / nabycie",
+        "i1": "Ilość wyrobów nowatorskich (kg)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "e-pap_paser": {
+        "menu": "Płyn do e-papierosów paserstwo",
+        "nazwa": "Płyn do e-papierosów paserstwo / nabycie",
+        "i1": "Ilość płynu (ml)",
+        "i2": "Ilość urządzeń (szt.)",
+        "wyniki": {"v": True, "a": True, "av": True, "w": True},
+    },
+    "e-pap_przemyt": {
+        "menu": "Płyn do e-papierosów przemyt",
+        "nazwa": "Płyn do e-papierosów przemyt",
+        "i1": "Ilość płynu (ml)",
+        "i2": "Ilość urządzeń (szt.)",
+        "wyniki": {"v": True, "a": True, "c": True, "av": True, "avc": True, "w": True},
+    },
+}
 
 class Formularz_glowny(ft.Column):
     def __init__(self):
@@ -28,6 +127,7 @@ class Formularz_glowny(ft.Column):
         
         # W klasie Twojego formularza:
         self.stawki = self.zaladuj_stawki()
+        self.tryby_konfig = TRYBY_KONFIG
 
         # Logo
         self.logo = ft.Container(
@@ -119,6 +219,15 @@ class Formularz_glowny(ft.Column):
         )
 
             # 2. Menu rozwijane
+        menu_items = []
+        for tryb_id, cfg in self.tryby_konfig.items():
+            menu_items.append(
+                ft.PopupMenuItem(
+                    content=cfg["menu"],
+                    on_click=lambda e, t=tryb_id: e.page.run_task(self.ustaw_tryb, t),
+                )
+            )
+
         self.menu_lista = ft.PopupMenuButton(
             content=ft.Container(
                 bgcolor=ft.Colors.GREEN_300,
@@ -135,23 +244,7 @@ class Formularz_glowny(ft.Column):
                 padding=10,
                 border_radius=8,
             ),
-            items=[
-                ft.PopupMenuItem(content="Papierosy przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_przemyt", "Papierosy przemyt", i1="Ilość papierosów (szt.)", v=True, a=True, c=True, av=True, avc=True, w=True)),
-                ft.PopupMenuItem(content="Papierosy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "papierosy_paser", "Papierosy paserstwo / nabycie", i1="Ilość papierosów (szt.)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Wódka przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_przemyt", "Wódka przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Wódka paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "wodka_paser", "Wódka paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True,w=True)),
-                ft.PopupMenuItem(content="Tytoń przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_przemyt", "Tytoń przemyt", i1="Ilość tytoniu (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
-                ft.PopupMenuItem(content="Tytoń paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "tyton_paser", "Tytoń paserstwo / nabycie", i1="Ilość tytoniu (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_przemyt", "Cygara i cygaretki przemyt", i1="Ilość towaru (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
-                ft.PopupMenuItem(content="Cygara/cygaretki paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "cygara_paser", "Cygara i cygaretki paserstwo / nabycie", i1="Ilość towaru (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Spirytus przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_przemyt", "Spirytus przemyt", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", i3="Kurs Euro", v=True, a=True, c=True, av=True, avc=True,w=True)),
-                ft.PopupMenuItem(content="Spirytus paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "spirytus_paser", "Spirytus paserstwo / nabycie", i1="Ilość litrów (l.)", i2="Zawartość alkoholu (%)", a=True,w=True)),
-                ft.PopupMenuItem(content="Susz tytoniowy paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "susz_paser", "Susz tytoniowy paserstwo / nabycie", i1="Ilość suszu tytoniowego (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie przemyt", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_przemyt", "Wyroby nowatorskie przemyt", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, c=True, av=True, avc=True,w=True)),
-                ft.PopupMenuItem(content="Wyroby nowatorskie paserstwo", on_click=lambda e: e.page.run_task(self.ustaw_tryb, "nowatorskie_paser", "Wyroby nowatorskie paserstwo / nabycie", i1="Ilość wyrobów nowatorskich (kg)", v=True, a=True, av=True,w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów paserstwo",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_paser","Płyn do e-papierosów paserstwo / nabycie",i1="Ilość płynu (ml)",i2="Ilość urządzeń (szt.)", v=True,a=True, av=True, w=True)),
-                ft.PopupMenuItem(content="Płyn do e-papierosów przemyt",on_click=lambda e: e.page.run_task(self.ustaw_tryb, "e-pap_przemyt", "Płyn do e-papierosów przemyt", i1="Ilość płynu (ml)", i2="Ilość urządzeń (szt.)", v=True, a=True, c=True, av=True, avc=True, w=True)),
-            ],
+            items=menu_items,
             tooltip="Wybierz rodzaj towaru",
             menu_position=ft.PopupMenuPosition.UNDER,
             width=250
@@ -252,6 +345,24 @@ class Formularz_glowny(ft.Column):
             actions_alignment=ft.MainAxisAlignment.CENTER,
         )
 
+    async def _refresh(self, control=None):
+        target = control or self
+        if hasattr(target, "update_async"):
+            await target.update_async()
+        else:
+            target.update()
+
+    def _format_kwota(self, value):
+        return f"{value:.0f} zl"
+
+    def _ustaw_wyniki_pol(self, a, v, c, w):
+        self.pole_akcyza.value = self._format_kwota(a)
+        self.pole_vat.value = self._format_kwota(v)
+        self.pole_clo.value = self._format_kwota(c)
+        self.pole_wartosc.value = self._format_kwota(w)
+        self.pole_av.value = self._format_kwota(a + v)
+        self.pole_avc.value = self._format_kwota(a + v + c)
+
     async def obsluga_enter(self, e):
         # Jeśli pole 1 straciło fokus (blur) lub naciśnięto Enter
         if e.control == self.pole_input1:
@@ -269,7 +380,7 @@ class Formularz_glowny(ft.Column):
             # W drugim polu zawsze wyzwala obliczenia
             await self.glowny_oblicz(None)
 
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
 
 
     async def wyczysc_pola(self, e):
@@ -289,14 +400,14 @@ class Formularz_glowny(ft.Column):
         self.przycisk_podglad.visible = False
         self.przycisk_wyczysc.visible = False
 
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
         await self.pole_input1.focus()
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
 
     async def finalny_zapis_pdf(self, e):
         # 1. Zamykamy okno dialogowe
         self.dialog_numeru.open = False
-        self.page.update()  # Ważne: używamy await na Renderze
+        await self._refresh(self.page)
 
         # 2. Wywołujemy Twój pierwotny kod zapisu
         # Przekazujemy 'e', aby FilePicker wiedział, kto go wywołał
@@ -308,51 +419,63 @@ class Formularz_glowny(ft.Column):
     async def did_mount_async(self):
         if self.page:
             self.page.overlay.append(self.save_file_picker)
-            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
+            await self._refresh(self.page)
 
     async def menu_hover(self, e):
         is_hovered = str(e.data).lower() == "true"
         e.control.bgcolor = ft.Colors.GREEN_900 if is_hovered else ft.Colors.GREEN_300
-        await e.control.update_async() if hasattr(e.control, "update_async") else e.control.update()
+        await self._refresh(e.control)
 
-    async def ustaw_tryb(self, tryb, nazwa, i1=None, i2=None, i3=None, v=False, a=False, c=False, av=False, avc=False, w=False):
+    async def ustaw_tryb(self, tryb):
+        config = self.tryby_konfig.get(tryb)
+        if not config:
+            return
+
         self.wybrany_tryb = tryb
         # Animacja logo
         self.logo.width = 100
         self.logo.height = 100
         self.logo.alignment = ft.Alignment.top_left if hasattr(ft.Alignment, "top_left") else ft.Alignment(-1, -1)
         self.logo_container.alignment = ft.MainAxisAlignment.START
-        
-        await self.layout_formularza.update_async() if hasattr(self.layout_formularza, "update_async") else self.layout_formularza.update()
+
+        await self._refresh(self.layout_formularza)
         await self.wyczysc_formularz()
-        self.pole_towar.value = nazwa
-        
+        self.pole_towar.value = config["nazwa"]
+
+        i1 = config.get("i1")
+        i2 = config.get("i2")
+        i3 = config.get("i3")
+
         self.pole_input1.visible = i1 is not None
-        if i1: self.pole_input1.label = i1
-        
+        if i1:
+            self.pole_input1.label = i1
+
         self.pole_input2.visible = i2 is not None
-        if i2: self.pole_input2.label = i2
-        
+        if i2:
+            self.pole_input2.label = i2
+
         self.pole_input3.visible = i3 is not None
-        if i3: self.pole_input3.label = i3
-        
-        self.pole_vat.visible = v
-        self.pole_akcyza.visible = a
-        self.pole_clo.visible = c
-        self.pole_av.visible = av
-        self.pole_avc.visible = avc
-        self.pole_wartosc.visible = w
-        
+        if i3:
+            self.pole_input3.label = i3
+
+        wyniki = config.get("wyniki", {})
+        self.pole_vat.visible = wyniki.get("v", False)
+        self.pole_akcyza.visible = wyniki.get("a", False)
+        self.pole_clo.visible = wyniki.get("c", False)
+        self.pole_av.visible = wyniki.get("av", False)
+        self.pole_avc.visible = wyniki.get("avc", False)
+        self.pole_wartosc.visible = wyniki.get("w", False)
+
         self.przycisk_oblicz.visible = True
         self.kontener_statusu.visible = True
         self.sekcja_wyniki.visible = True
         self.sekcja_dane.visible = True
         self.przycisk_podglad.visible = False
-        
+
         if i3 == "Kurs Euro":
             await self.pobierz_kurs_euro()
-            
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+
+        await self._refresh()
         # Teraz dajemy fokus na pierwsze widoczne pole (opcjonalnie na iOS)
         # if self.pole_input1.visible:
         #     await self.pole_input1.focus()
@@ -369,37 +492,8 @@ class Formularz_glowny(ft.Column):
             pole.bgcolor = ft.Colors.GREEN_50
         self.przycisk_oblicz.visible = False
         self.przycisk_podglad.visible = False
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
 
-
-    def sformatuj_wyniki(self):
-
-        wynik = f"--- KALKULATOR CELNO-SKARBOWY 2026 ---\n\n"
-        wynik += f"Towar: {self.pole_towar.value}\n\n"
-        wynik += f"Data: {self.dzisiaj}\n\n"
-        wynik += "-" * 40 + "\n"
-        
-        if self.pole_input1.visible:
-            wynik += f"{self.pole_input1.label}: {self.pole_input1.value}\n"
-        if self.pole_input2.visible:
-            wynik += f"{self.pole_input2.label}: {self.pole_input2.value}\n"
-        if self.pole_input3.visible:
-            wynik += f"{self.pole_input3.label}: {self.pole_input3.value}\n"
-        
-        wynik += "-" * 40 + "\n"
-
-        if self.pole_akcyza.visible:
-            wynik += f"Akcyza:  {self.pole_akcyza.value}\n\n"
-        if self.pole_vat.visible:
-            wynik += f"VAT:  {self.pole_vat.value}\n\n"
-        if self.pole_clo.visible:
-            wynik += f"Cło:  {self.pole_clo.value}\n\n"
-        if self.pole_av.visible:
-            wynik += f"Akcyza+VAT:  {self.pole_av.value}\n\n"
-        if self.pole_avc.visible:
-            wynik += f"Akcyza+VAT+Cło:  {self.pole_avc.value}\n\n"
-        
-        return wynik
 
     async def otworz_podglad(self, e):
         try:
@@ -407,7 +501,7 @@ class Formularz_glowny(ft.Column):
             snack = ft.SnackBar(ft.Text("Przygotowanie pliku PDF..."), duration=2000)
             self.page.overlay.append(snack)
             snack.open = True
-            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
+            await self._refresh(self.page)
 
             # Zapisujemy PDF do zmiennej tymczasowej w celu późniejszego zapisu przez FilePicker
             pdf_bytes = self.generuj_pdf_bytes()
@@ -443,14 +537,14 @@ class Formularz_glowny(ft.Column):
                         url_path = "/" + url_path
                     await self.page.launch_url_async(f"file://{url_path}") if hasattr(self.page, "launch_url_async") else self.page.launch_url(f"file://{url_path}")
                 
-                await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
+                await self._refresh(self.page)
             
         except Exception as ex:
             print(f"Błąd przygotowania podglądu: {ex}")
             error_snack = ft.SnackBar(ft.Text(f"Błąd: {ex}"))
             self.page.overlay.append(error_snack)
             error_snack.open = True
-            await self.page.update_async() if hasattr(self.page, "update_async") else self.page.update()
+            await self._refresh(self.page)
 
     def generuj_pdf_bytes(self):
         from fpdf import FPDF
@@ -513,11 +607,11 @@ class Formularz_glowny(ft.Column):
                                          "Ż": "Z"}
                         for k, v in polskie_znaki.items():
                             item = item.replace(k, v)
-                    row.cell(item)
+                    row.cell(str(item) if item is not None else "")
             # Przejdź na dół strony
         # Przejdź na 28mm od dołu strony
         pdf.set_y(-30)
-        pdf.set_font("Arial", size=8)
+        pdf.set_font(base_font, size=8)
         # Używamy cell zamiast multi_cell, bo zajmuje tylko jedną linię
         pdf.cell(0, 10, "Niniejszy wydruk ma charakter informacyjny i nie stanowi dokumentu urzędowego.", align="C", ln=False)
 
@@ -529,7 +623,7 @@ class Formularz_glowny(ft.Column):
         self.page.update()
 
     def on_save_result(self, e: ft.FilePickerResultEvent):
-        pass
+        return
 
     async def pobierz_liczbe(self, pole):
         surowy_tekst = pole.value.strip() if pole.value else ""
@@ -537,12 +631,12 @@ class Formularz_glowny(ft.Column):
         
         if not surowy_tekst:
             pole.error = "Uzupełnij pole!"
-            await self.update_async() if hasattr(self, "update_async") else self.update()
+            await self._refresh()
             return None
         
         if surowy_tekst == ".":
             pole.error = "Błędna liczba!"
-            await self.update_async() if hasattr(self, "update_async") else self.update()
+            await self._refresh()
             return None
 
         if surowy_tekst.startswith("."):
@@ -553,7 +647,7 @@ class Formularz_glowny(ft.Column):
             return float(surowy_tekst)
         except ValueError:
             pole.error = "To nie jest liczba!"
-            await self.update_async() if hasattr(self, "update_async") else self.update()
+            await self._refresh()
             return None
 
     async def pobierz_kurs_euro(self):
@@ -570,7 +664,7 @@ class Formularz_glowny(ft.Column):
                     data_publikacji = data["rates"][0]["effectiveDate"]
                     self.pole_input3.value = f"{kurs:.4f}"
                     self.pole_input3.label = f"Kurs EUR (NBP: {data_publikacji})"
-                    await self.update_async() if hasattr(self, "update_async") else self.update()
+                    await self._refresh()
         except Exception as ex:
             print(f"Błąd kursu: {ex}")
 
@@ -582,7 +676,7 @@ class Formularz_glowny(ft.Column):
         if a > self.prog_przestepstwa: self.pole_akcyza.value += " - PRZESTĘPSTWO!"
         if v > self.prog_przestepstwa: self.pole_vat.value += " - PRZESTĘPSTWO!"
         if c > self.prog_przestepstwa: self.pole_clo.value += " - PRZESTĘPSTWO!"
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
 
     def zaladuj_stawki(self):
         # Najpierw próbujemy pobrać z sieci
@@ -624,8 +718,6 @@ class Formularz_glowny(ft.Column):
         a, v, c, w = 0, 0, 0, 0
         
         if self.wybrany_tryb == "papierosy_przemyt":
-            #wc_szt = 34 / 1000
-            #s_clo, s_akc, s_vat = 0.5760, 1.40574879, 0.23
             wc = s["wc_mnoznik"] * i1
             a = round(s["s_akc"] * i1, 0)
             c = round(wc * s["s_clo"], 0)
@@ -634,25 +726,21 @@ class Formularz_glowny(ft.Column):
     
         elif self.wybrany_tryb == "papierosy_paser":
             wc = round(s["wc_mnoznik"] * i1, 0)
-            #s_akc, s_vat = 1.40574879, 0.23
             a = round(s["s_akc"] * i1, 0)
             v = round((wc + a) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "wodka_przemyt":
-            #s_akc, s_vat, wc_jedn = 83.91, 0.23, 13
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
             v = round((wc + a) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "wodka_paser":
-            #s_akc = 83.91
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
             w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "tyton_przemyt":
-            #s_akc, s_vat, wc_jedn, s_clo = 1329.928790, 0.23, 74, 0.749
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
@@ -660,14 +748,12 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
             
         elif self.wybrany_tryb == "tyton_paser":
-            #s_akc, s_vat, wc_jedn = 1329.928790, 0.23, 130
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "spirytus_przemyt":
-            #s_akc, s_vat, wc_jedn = 83.91, 0.23, 17.50
             c = round((s["s_clo"] / 100) * i3 * i1, 0)
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
@@ -675,12 +761,10 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "spirytus_paser":
-            #s_akc = 83.91
             a = round(s["s_akc"] * (i1 * i2 / 100), 0)
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "cygara_przemyt":
-            #s_akc, s_vat, wc_jedn, s_clo = 786, 0.23, 10, 0.26
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
@@ -695,7 +779,6 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "nowatorskie_przemyt":
-            #s_akc, s_vat, wc_jedn, s_clo = 1477.91, 0.23, 34, 0.166
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             c = round(s["s_clo"] * wc, 0)
@@ -703,55 +786,39 @@ class Formularz_glowny(ft.Column):
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "nowatorskie_paser":
-            #s_akc, s_vat, wc_jedn = 1477.91, 0.23, 40
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "susz_paser":
-            #s_akc, s_vat, wc_jedn = 1095.16, 0.08, 20.10
             wc = round(s["wc_jedn"] * i1, 0)
             a = round(s["s_akc"] * i1, 0)
             v = round((a + wc) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
 
         elif self.wybrany_tryb == "e-pap_przemyt":
-
             wc = round(s["wc_jedn"] * i1, 0)
-            a = round(s["s_akc"] * i1, 0)
+            akcyza_plynu = round(s["s_akc"] * i1, 0)
+            a = round((s["s_akc2"] * i2) + akcyza_plynu, 0) if i2 > 0 else akcyza_plynu
             c = round(s["s_clo"] * wc, 0)
             v = round((a + wc + c) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
-            self.akcyza_urzadzenie = round((s["s_akc2"] * i2) + a, 0)
-            if i2 > 0 :
-                a = self.akcyza_urzadzenie
-            else :
-                a = round(s["s_akc"] * i1, 0)
 
         elif self.wybrany_tryb == "e-pap_paser":
             wc = round(s["wc_jedn"] * i1, 0)
-            a = round(s["s_akc"] * i1, 0)
-            c = round(s["s_clo"] * wc, 0)
-            v = round((a + wc + c) * s["s_vat"], 0)
+            akcyza_plynu = round(s["s_akc"] * i1, 0)
+            a = round((s["s_akc2"] * i2) + akcyza_plynu, 0) if i2 > 0 else akcyza_plynu
+            c = 0
+            v = round((a + wc) * s["s_vat"], 0)
             w = round(s["s_wartosc"] * i1, 0)
-            self.akcyza_urzadzenie = round((s["s_akc2"] * i2) + a, 0)
-            if i2 > 0:
-                a = self.akcyza_urzadzenie
-            else:
-                a = round(s["s_akc"] * i1, 0)
 
-        self.pole_akcyza.value = f"{a:.0f} zł"
-        self.pole_vat.value = f"{v:.0f} zł"
-        self.pole_clo.value = f"{c:.0f} zł"
-        self.pole_wartosc.value = f"{w:.0f} zł"
-        self.pole_av.value = f"{a + v:.0f} zł"
-        self.pole_avc.value = f"{a + v + c:.0f} zł"
+        self._ustaw_wyniki_pol(a, v, c, w)
         
         self.przycisk_podglad.visible = True
         self.przycisk_wyczysc.visible = True
         await self.przestepstwo(a, v, c)
-        await self.update_async() if hasattr(self, "update_async") else self.update()
+        await self._refresh()
 
 
 
