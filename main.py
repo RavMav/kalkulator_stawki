@@ -117,7 +117,7 @@ class Formularz_glowny(ft.Column):
         #self.max_width = 1000  # Lub inna wartość większa niż Twój max_width
         self.horizontal_alignment = ft.CrossAxisAlignment.STRETCH
 
-        self.prog_przestepstwa = 4608 * 5
+        self.prog_przestepstwa = 4806 * 5
         self.akcyza_urzadzenie = 0
         self.wybrany_tryb = None
         # Ustawienie poprawnej strefy czasowej (Polska +1h względem UTC na serwerach)
