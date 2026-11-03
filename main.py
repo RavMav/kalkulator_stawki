@@ -272,7 +272,7 @@ class Formularz_glowny(ft.Column):
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            padding=ft.padding.only(left=20, right=20, bottom=10, top=10)
+            padding=ft.Padding.only(left=20, right=20, bottom=10, top=10)
         )
 
         self.kontener_statusu = ft.Container(
@@ -317,7 +317,7 @@ class Formularz_glowny(ft.Column):
             content=ft.Column([
                 self.logo_container, self.naglowek, self.kontener_statusu, self.sekcja_dane, self.sekcja_wyniki, self.stopka_akcji,
             ], spacing=10),
-            padding=ft.padding.only(left=20, right=20, top=10, bottom=40), bgcolor=ft.Colors.WHITE, border_radius=20,
+            padding=ft.Padding.only(left=20, right=20, top=10, bottom=40), bgcolor=ft.Colors.WHITE, border_radius=20,
             border=ft.Border.all(1, "green_200"), shadow=ft.BoxShadow(blur_radius=15, color="black12")
         )
         self.layout_formularza.max_width = 900

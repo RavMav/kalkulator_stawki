@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dfd7ffd4-805e-43e8-8181-d24f4972dab5" name="Changes" comment="poprawiona wartość progu przestepstwa">
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="10" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;RavMav&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/RavMav/kalkulator_stawki.git&quot;,
+    &quot;accountId&quot;: &quot;eb875bb3-6d1b-4689-9c43-91952f90c25a&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/flet/controls/core/column.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/flet/controls/layout_control.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/flet/controls/material/button.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/flet/controls/material/container.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/.venv/Lib/site-packages/flet/controls/material/popup_menu_button.py" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="39WUhGZIpj3lHI3ql1LmjqBAim6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.kalkulator_naleznosci.executor&quot;: &quot;Run&quot;,
+    &quot;Python.kalkulator_naleznosci2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.kalkulator_naleznosci3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dell/PycharmProjects/PythonProject&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Dell\PycharmProjects\PythonProject" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dfd7ffd4-805e-43e8-8181-d24f4972dab5" name="Changes" comment="" />
+      <created>1770811439879</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770811439879</updated>
+      <workItem from="1770811440881" duration="21270000" />
+      <workItem from="1770893399772" duration="33943000" />
+      <workItem from="1771171659460" duration="58313000" />
+      <workItem from="1771969265171" duration="2366000" />
+      <workItem from="1772009979938" duration="54298000" />
+      <workItem from="1772359074166" duration="944000" />
+      <workItem from="1772360056395" duration="1618000" />
+      <workItem from="1772361715630" duration="1238000" />
+      <workItem from="1772362980218" duration="72453000" />
+      <workItem from="1773049422902" duration="3848000" />
+      <workItem from="1793694375829" duration="2560000" />
+    </task>
+    <task id="LOCAL-00001" summary="Inicjalizacja projektu - czysty start">
+      <option name="closed" value="true" />
+      <created>1772360611958</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772360611958</updated>
+    </task>
+    <task id="LOCAL-00002" summary="dodano filepickera i asenc do def">
+      <option name="closed" value="true" />
+      <created>1772363630677</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1772363630677</updated>
+    </task>
+    <task id="LOCAL-00003" summary="kolejne zmiany async / aplikacja nie dzialala">
+      <option name="closed" value="true" />
+      <created>1772364615313</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1772364615313</updated>
+    </task>
+    <task id="LOCAL-00004" summary="kolejne zmiany async / aplikacja nie dzialala 2">
+      <option name="closed" value="true" />
+      <created>1772365550919</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772365550919</updated>
+    </task>
+    <task id="LOCAL-00005" summary="brak bledy filepicker, aplikacja dziala, dodany src_bytes">
+      <option name="closed" value="true" />
+      <created>1772367233611</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1772367233611</updated>
+    </task>
+    <task id="LOCAL-00006" summary="generuje pdf / dodano nr sprawy">
+      <option name="closed" value="true" />
+      <created>1772439056267</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1772439056267</updated>
+    </task>
+    <task id="LOCAL-00007" summary="wersja poprawiona / pdf ze stopka">
+      <option name="closed" value="true" />
+      <created>1772444773827</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1772444773827</updated>
+    </task>
+    <task id="LOCAL-00008" summary="dodane pole wartosc oraz e-pap">
+      <option name="closed" value="true" />
+      <created>1772452402052</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1772452402052</updated>
+    </task>
+    <task id="LOCAL-00009" summary="dodane pole wartosc oraz e-pap">
+      <option name="closed" value="true" />
+      <created>1772452918621</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1772452918621</updated>
+    </task>
+    <task id="LOCAL-00010" summary="dodane pole wartosc oraz e-pap/poprawki">
+      <option name="closed" value="true" />
+      <created>1772454459173</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1772454459173</updated>
+    </task>
+    <task id="LOCAL-00011" summary="wersja działająca / dodano opis do pól">
+      <option name="closed" value="true" />
+      <created>1772455923754</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1772455923754</updated>
+    </task>
+    <task id="LOCAL-00012" summary="wersja działająca / dodano przycisk wyczyść">
+      <option name="closed" value="true" />
+      <created>1772457349118</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1772457349118</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fokus w polu/ ikona oblicz">
+      <option name="closed" value="true" />
+      <created>1772613432793</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1772613432793</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fokus w polu/ ikona oblicz">
+      <option name="closed" value="true" />
+      <created>1772616910981</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1772616910981</updated>
+    </task>
+    <task id="LOCAL-00015" summary="dodano rozróżnienie na iOS/Android - dot. klawiatury i fokusa">
+      <option name="closed" value="true" />
+      <created>1772617853105</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1772617853105</updated>
+    </task>
+    <task id="LOCAL-00016" summary="dodano rozróżnienie na iOS/Android - dot. klawiatury i fokusa cd">
+      <option name="closed" value="true" />
+      <created>1772619179517</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1772619179517</updated>
+    </task>
+    <task id="LOCAL-00017" summary="rozróżnienie na systemy poprawione / wersja działa na oknie w komp">
+      <option name="closed" value="true" />
+      <created>1772622158840</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1772622158840</updated>
+    </task>
+    <task id="LOCAL-00018" summary="wersja z ruchomym kursorem / testy">
+      <option name="closed" value="true" />
+      <created>1772623515657</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1772623515657</updated>
+    </task>
+    <task id="LOCAL-00019" summary="wersja z ruchomym kursorem / testy 2">
+      <option name="closed" value="true" />
+      <created>1772624961403</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1772624961403</updated>
+    </task>
+    <task id="LOCAL-00020" summary="wersja z ruchomym kursorem / testy 2">
+      <option name="closed" value="true" />
+      <created>1772626084573</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1772626084573</updated>
+    </task>
+    <task id="LOCAL-00021" summary="dodana wielkość czcionki w polu texfield">
+      <option name="closed" value="true" />
+      <created>1772628056238</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1772628056238</updated>
+    </task>
+    <task id="LOCAL-00022" summary="dodana wielkość czcionki w polu texfield / blokada zoom">
+      <option name="closed" value="true" />
+      <created>1772629291803</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1772629291803</updated>
+    </task>
+    <task id="LOCAL-00023" summary="powrót do NUMBER / fokus">
+      <option name="closed" value="true" />
+      <created>1772630667739</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1772630667739</updated>
+    </task>
+    <task id="LOCAL-00024" summary="dalsze próby ze skaczacym ekranem na iOS">
+      <option name="closed" value="true" />
+      <created>1772631508028</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1772631508028</updated>
+    </task>
+    <task id="LOCAL-00025" summary="pasek nad klawiaturą / wers.1">
+      <option name="closed" value="true" />
+      <created>1772654933535</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1772654933535</updated>
+    </task>
+    <task id="LOCAL-00026" summary="pasek nad klawiaturą / wers.2">
+      <option name="closed" value="true" />
+      <created>1772655901149</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1772655901149</updated>
+    </task>
+    <task id="LOCAL-00027" summary="pasek nad klawiaturą / wers.3">
+      <option name="closed" value="true" />
+      <created>1772656980621</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1772656980621</updated>
+    </task>
+    <task id="LOCAL-00028" summary="pasek nad klawiaturą / wers.3">
+      <option name="closed" value="true" />
+      <created>1772657575862</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1772657575862</updated>
+    </task>
+    <task id="LOCAL-00029" summary="pasek nad klawiaturą / wers.5">
+      <option name="closed" value="true" />
+      <created>1772658098299</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1772658098299</updated>
+    </task>
+    <task id="LOCAL-00030" summary="pasek nad klawiaturą / wers.5">
+      <option name="closed" value="true" />
+      <created>1772659157755</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1772659157755</updated>
+    </task>
+    <task id="LOCAL-00031" summary="pasek iOS wykorzystany do fokus / wer.2">
+      <option name="closed" value="true" />
+      <created>1772659873874</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1772659873874</updated>
+    </task>
+    <task id="LOCAL-00032" summary="pasek iOS wykorzystany do fokus / szary paselk -wer.3">
+      <option name="closed" value="true" />
+      <created>1772660484153</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1772660484153</updated>
+    </task>
+    <task id="LOCAL-00033" summary="pasek iOS wykorzystany do fokus / szary paselk -wer.4">
+      <option name="closed" value="true" />
+      <created>1772694830297</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1772694830297</updated>
+    </task>
+    <task id="LOCAL-00034" summary="poprawy przez CODEX - wer. 1">
+      <option name="closed" value="true" />
+      <created>1772702330180</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1772702330180</updated>
+    </task>
+    <task id="LOCAL-00035" summary="poprawiona wartość progu przestepstwa">
+      <option name="closed" value="true" />
+      <created>1773049472445</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1773049472445</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="generuje pdf / dodano nr sprawy" />
+    <MESSAGE value="wersja poprawiona / pdf ze stopka" />
+    <MESSAGE value="dodane pole wartosc oraz e-pap" />
+    <MESSAGE value="dodane pole wartosc oraz e-pap/poprawki" />
+    <MESSAGE value="wersja działająca / dodano opis do pól" />
+    <MESSAGE value="wersja działająca / dodano przycisk wyczyść" />
+    <MESSAGE value="fokus w polu/ ikona oblicz" />
+    <MESSAGE value="dodano rozróżnienie na iOS/Android - dot. klawiatury i fokusa" />
+    <MESSAGE value="dodano rozróżnienie na iOS/Android - dot. klawiatury i fokusa cd" />
+    <MESSAGE value="rozróżnienie na systemy poprawione / wersja działa na oknie w komp" />
+    <MESSAGE value="wersja z ruchomym kursorem / testy" />
+    <MESSAGE value="wersja z ruchomym kursorem / testy 2" />
+    <MESSAGE value="dodana wielkość czcionki w polu texfield" />
+    <MESSAGE value="dodana wielkość czcionki w polu texfield / blokada zoom" />
+    <MESSAGE value="powrót do NUMBER / fokus" />
+    <MESSAGE value="dalsze próby ze skaczacym ekranem na iOS" />
+    <MESSAGE value="pasek nad klawiaturą / wers.1" />
+    <MESSAGE value="pasek nad klawiaturą / wers.2" />
+    <MESSAGE value="pasek nad klawiaturą / wers.3" />
+    <MESSAGE value="pasek nad klawiaturą / wers.5" />
+    <MESSAGE value="pasek iOS wykorzystany do fokus / wer.2" />
+    <MESSAGE value="pasek iOS wykorzystany do fokus / szary paselk -wer.3" />
+    <MESSAGE value="pasek iOS wykorzystany do fokus / szary paselk -wer.4" />
+    <MESSAGE value="poprawy przez CODEX - wer. 1" />
+    <MESSAGE value="poprawiona wartość progu przestepstwa" />
+    <option name="LAST_COMMIT_MESSAGE" value="poprawiona wartość progu przestepstwa" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PythonProject1$kalkulator_naleznosci.coverage" NAME="kalkulator_naleznosci Coverage Results" MODIFIED="1770812749079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../PythonProject" />
+    <SUITE FILE_PATH="coverage/PythonProject1$main.coverage" NAME="main Coverage Results" MODIFIED="1793696659354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PythonProject1$kalkulator_naleznosci3.coverage" NAME="kalkulator_naleznosci3 Coverage Results" MODIFIED="1772012439125" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../PythonProject" />
+    <SUITE FILE_PATH="coverage/PythonProject1$kalkulator_naleznosci2.coverage" NAME="kalkulator_naleznosci2 Coverage Results" MODIFIED="1771331668367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../PythonProject" />
+  </component>
+</project>
